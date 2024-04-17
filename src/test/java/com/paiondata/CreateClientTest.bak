@@ -15,7 +15,6 @@ public class CreateClientTest {
         // Act
         AliyunInfo info = AliyunInfo.builder()
                 .apiKey(apiKey)
-                .inputPath(inputPath)
                 .mode(false)
                 .build();
         CreateClient.aliTranslate(info);

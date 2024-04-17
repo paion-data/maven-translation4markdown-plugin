@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.paiondata</groupId>
-    <artifactId>ai-translation4markdown-Java</artifactId>
+    <artifactId>ai-translation4markdown-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>ai-translation4markdown-Java</name>
+    <name>ai-translation4markdown-plugin</name>
     <description>
-        An AI translation for markdown.
+        An AI translation plugin for markdown.
     </description>
-    <url>https://github.com/paion-data/ai-translation4markdown-Java</url>
+    <url>https://github.com/paion-data/maven-translation4markdown-plugin</url>
 
     <developers>
         <developer>
