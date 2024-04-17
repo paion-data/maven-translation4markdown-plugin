@@ -43,10 +43,10 @@ public class TranslationMojo extends AbstractMojo {
 
         try {
             // 调用 CreateClient.sparkTranslate 方法进行翻译
-            String result = CreateClient.sparkTranslate(info);
+            CreateClient.sparkTranslate(info);
 
             // 输出结果
-            getLog().info("翻译结果: " + result);
+//            getLog().info("翻译结果: " + result);
         } catch (Exception e) {
             throw new MojoExecutionException("执行翻译时出现异常", e);
         }

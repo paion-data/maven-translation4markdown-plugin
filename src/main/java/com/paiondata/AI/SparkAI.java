@@ -53,6 +53,7 @@ public class SparkAI extends WebSocketListener {
 
     public static String getAnswer(String appid, String apiKey, String apiSecret, String content) {
         try {
+            totalAnswer = "";
             // 构建鉴权url
             String authUrl = getAuthUrl(hostUrl, apiKey, apiSecret);
             OkHttpClient client = new OkHttpClient.Builder().build();
@@ -96,12 +97,6 @@ public class SparkAI extends WebSocketListener {
             return "Error: " + e.getMessage();
         }
     }
-
-     //主函数
-//    public static void main(String[] args) {
-//        String answer = getAnswer(apiKey, apiSecret, "你好");
-//        System.out.println(answer + "1");
-//    }
 
     public static boolean canAddHistory(){  // 由于历史记录最大上线1.2W左右，需要判断是能能加入历史
         int history_length=0;

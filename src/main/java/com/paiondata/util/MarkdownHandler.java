@@ -8,29 +8,29 @@ import com.paiondata.Exception.TranslationException;
 import com.paiondata.entity.AliyunInfo;
 import com.paiondata.entity.MarkdownFileContent;
 import com.paiondata.entity.SparkInfo;
-
 import java.io.IOException;
 
 public class MarkdownHandler {
 
-    public static String translate(String service, String... params) throws TranslationException, NoApiKeyException, InputRequiredException {
-        String trans;
+    public static void translate(String service, String... params) throws TranslationException, NoApiKeyException, InputRequiredException {
         switch (service) {
             case AliyunInfo.service -> {
+                String trans;
                 MarkdownFileContent fileContent1 = readFile(params[1]);
                 String detectLanguage = LanguageDetector.detectLanguage(fileContent1.getContent());
                 String content1 = "请帮我将Markdown文档翻译成" + detectLanguage + ", 这个是提供的Markdown文档:\n"
                         + fileContent1.getContent();
                 trans = AliDashScopeAI.callWithMessage(params[0], content1, Boolean.parseBoolean(params[3]));
-                return createOutputFile(params[2], fileContent1, trans);
+                createOutputFile(params[2], fileContent1, trans);
             }
             case SparkInfo.service -> {
+                String trans;
                 MarkdownFileContent fileContent2 = readFile(params[3]);
                 String detectLanguage = LanguageDetector.detectLanguage(fileContent2.getContent());
                 String content2 = "请帮我将Markdown文档翻译成" + detectLanguage + ", 这个是提供的Markdown文档:\n"
                         + fileContent2.getContent();
                 trans = SparkAI.getAnswer(params[0], params[1], params[2], content2);
-                return createOutputFile(params[4], fileContent2, trans);
+                createOutputFile(params[4], fileContent2, trans);
             }
             default -> throw new TranslationException("Unsupported translation service: " + service);
         }

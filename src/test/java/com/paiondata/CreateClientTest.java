@@ -1,6 +1,5 @@
 package com.paiondata;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.paiondata.entity.AliyunInfo;
@@ -10,7 +9,7 @@ import com.paiondata.entity.SparkInfo;
 public class CreateClientTest {
 
     static String apiKey = "sk-**********************";
-    static String inputPath = "docs/example.md";
+    static String inputPath = "docs";
     @Test
     public void testAliyun() throws NoApiKeyException, InputRequiredException {
         // Act
@@ -19,10 +18,7 @@ public class CreateClientTest {
                 .inputPath(inputPath)
                 .mode(false)
                 .build();
-        String result = CreateClient.aliTranslate(info);
-
-        // Assert
-        assertNotNull(result);
+        CreateClient.aliTranslate(info);
     }
 
     @Test
@@ -34,15 +30,12 @@ public class CreateClientTest {
                 .outputPath("i18n/test/")
                 .mode(true)
                 .build();
-        String result = CreateClient.aliTranslate(info);
-
-        // Assert
-        assertNotNull(result);
+        CreateClient.aliTranslate(info);
     }
 
-    String appid = "**************************";
-    String apiSecret = "**************************";
-    String apiKey1 = "**************************";
+    String appid = "9ef2faca";
+    String apiSecret = "YmU3MGYyYTMxODM4ODFlNmEyOWEwNDk1";
+    String apiKey1 = "5a863ea65f88a876c03c4e7f389afa60";
 
     @Test
     public void testSpark() throws NoApiKeyException, InputRequiredException {
@@ -53,11 +46,10 @@ public class CreateClientTest {
                 .apiKey(apiKey1)
                 .inputPath(inputPath)
                 .build();
-        String result = CreateClient.sparkTranslate(info);
-
-        // Assert
-        assertNotNull(result);
+        CreateClient.sparkTranslate(info);
     }
+
+    static String inputPath2 = "docs2";
 
     @Test
     public void testSparkAddOutputPath() throws NoApiKeyException, InputRequiredException {
@@ -66,12 +58,8 @@ public class CreateClientTest {
                 .appid(appid)
                 .apiSecret(apiSecret)
                 .apiKey(apiKey1)
-                .inputPath(inputPath)
-                .outputPath("i18n/test")
+                .inputPath(inputPath2)
                 .build();
-        String result = CreateClient.sparkTranslate(info);
-
-        // Assert
-        assertNotNull(result);
+        CreateClient.sparkTranslate(info);
     }
 }

@@ -22,9 +22,9 @@ public class LanguageDetector {
 
         // 如果中文字符数量大于非中文字符数量，则判断为中文；反之则判断为英文
         if (chineseCount > nonChineseCount) {
-            return "中文";
-        } else {
             return "英语";
+        } else {
+            return "中文";
         }
     }
 
