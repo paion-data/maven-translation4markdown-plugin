@@ -29,10 +29,4 @@ public class MarkdownFileReader {
             }
         }
     }
-
-    public static void main(String[] args) {
-        String directoryPath = "docs";
-        List<String> markdownFiles = getAllMarkdownFiles(directoryPath);
-        System.out.println("Markdown files in directory: " + markdownFiles);
-    }
 }

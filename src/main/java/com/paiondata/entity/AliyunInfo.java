@@ -15,10 +15,6 @@ public class AliyunInfo {
 
     private String apiKey;
 
-    private String inputPath;
-
-    private String outputPath;
-
     private String targetLanguage;
 
     private Boolean mode;

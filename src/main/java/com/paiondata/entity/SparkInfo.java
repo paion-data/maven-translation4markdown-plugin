@@ -18,8 +18,4 @@ public class SparkInfo {
     private String apiSecret;
 
     private String apiKey;
-
-    private String inputPath;
-
-    private String outputPath;
 }
