@@ -1,6 +1,7 @@
 package com.paiondata.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -15,17 +16,17 @@ public class GitChanges {
         List<String> deletedFiles = getChangedFiles(directoryPath, "--diff-filter=D");
         List<String> modifiedFiles = getChangedFiles(directoryPath, "--diff-filter=M");
 
-        System.out.println("Added files:");
+        System.out.println("Added files in latest commits:");
         for (String file : addedFiles) {
             System.out.println(file);
         }
 
-        System.out.println("Deleted files:");
+        System.out.println("Deleted files in latest commits:");
         for (String file : deletedFiles) {
             System.out.println(file);
         }
 
-        System.out.println("Modified files:");
+        System.out.println("Modified files in latest commits:");
         for (String file : modifiedFiles) {
             System.out.println(file);
         }
@@ -35,12 +36,18 @@ public class GitChanges {
         List<String> changedFiles = new ArrayList<>();
         try {
             ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command("git", "diff", "--name-only", diffFilter, "HEAD^", "HEAD", "--", directoryPath);
+            processBuilder.command("git", "log", "--name-only", "--pretty=format:", diffFilter, "HEAD^..HEAD");
+            processBuilder.directory(new File(directoryPath));
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+            boolean startParsing = false;
             while ((line = reader.readLine()) != null) {
-                changedFiles.add(line);
+                if (line.trim().isEmpty()) {
+                    startParsing = true;
+                } else if (startParsing) {
+                    changedFiles.add(line);
+                }
             }
             int exitCode = process.waitFor();
             if (exitCode != 0) {
