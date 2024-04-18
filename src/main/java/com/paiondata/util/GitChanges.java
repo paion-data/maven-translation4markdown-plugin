@@ -1,61 +1,62 @@
 package com.paiondata.util;
 
-import java.io.BufferedReader;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GitChanges {
 
     public static void main(String[] args) {
-        String directoryPath = "docs"; // 指定目录路径
+        String projectDir = System.getProperty("user.dir");
+        String gitRepoPath = projectDir + File.separator + ".git";
+        System.out.println("Local Git repository path: " + gitRepoPath);
 
-        List<String> addedFiles = getChangedFiles(directoryPath, "--diff-filter=A");
-        List<String> deletedFiles = getChangedFiles(directoryPath, "--diff-filter=D");
-        List<String> modifiedFiles = getChangedFiles(directoryPath, "--diff-filter=M");
+        File gitDir = new File(gitRepoPath);
+        try (Repository repository = new FileRepositoryBuilder().setGitDir(gitDir).build()) {
+            try (Git git = new Git(repository)) {
+                // 指定目录路径
+                String directoryPath = "docs"; // 替换为你想要检查的目录路径
 
-        System.out.println("Added files in latest commits:");
-        for (String file : addedFiles) {
-            System.out.println(file);
-        }
+                List<DiffEntry> diffs = git.diff()
+                        .setOldTree(prepareTreeParser(repository, "HEAD^", directoryPath))
+                        .setNewTree(prepareTreeParser(repository, "HEAD", directoryPath))
+                        .call();
 
-        System.out.println("Deleted files in latest commits:");
-        for (String file : deletedFiles) {
-            System.out.println(file);
-        }
-
-        System.out.println("Modified files in latest commits:");
-        for (String file : modifiedFiles) {
-            System.out.println(file);
+                // 输出变更的文件名
+                for (DiffEntry diff : diffs) {
+                    System.out.println("Change Type: " + diff.getChangeType());
+                    System.out.println("Old Path: " + diff.getOldPath());
+                    System.out.println("New Path: " + diff.getNewPath());
+                }
+            }
+        } catch (IOException | org.eclipse.jgit.api.errors.GitAPIException e) {
+            e.printStackTrace();
         }
     }
 
-    public static List<String> getChangedFiles(String directoryPath, String diffFilter) {
-        List<String> changedFiles = new ArrayList<>();
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command("git", "log", "--name-only", "--pretty=format:", diffFilter, "HEAD^..HEAD");
-            processBuilder.directory(new File(directoryPath));
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            boolean startParsing = false;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) {
-                    startParsing = true;
-                } else if (startParsing) {
-                    changedFiles.add(line);
-                }
+    private static ObjectId getHeadObjectId(Repository repository, String revision) throws IOException {
+        return repository.resolve(revision + "^{tree}");
+    }
+
+    private static CanonicalTreeParser prepareTreeParser(Repository repository, String revision, String directoryPath) throws IOException {
+        try (ObjectReader reader = repository.newObjectReader()) {
+            ObjectId head = getHeadObjectId(repository, revision);
+            try (Git git = new Git(repository)) {
+                // 获取指定目录的树对象
+                String treePath = head.getName() + ":" + directoryPath;
+                ObjectId treeId = git.getRepository().resolve(treePath);
+                return new CanonicalTreeParser(null, reader, treeId);
             }
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                System.err.println("Error: Git command exited with non-zero status");
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
-        return changedFiles;
     }
 }
