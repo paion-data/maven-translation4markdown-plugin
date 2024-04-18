@@ -1,0 +1,18 @@
+- **DB_USER**: Persistence DB username (needs have both Read and Write permissions).
+
+- **DB_PASSWORD**: The persistence DB user password.
+
+- **DB_URL**: The persistence DB URL, such as "jdbc:mysql://localhost/elide?serverTimezone=UTC".
+
+- **DB_DRIVER**: The SQL DB driver class name, such as "com.mysql.jdbc.Driver".
+
+- **DB_DIALECT**: The SQL DB dialect name, such as "org.hibernate.dialect.MySQLDialect".
+
+- **HIBERNATE_HBM2DDL_AUTO**: What to do with existing JPA database when webservice starts; can be one of the 4 values:
+
+    1. _validate_: validate that the schema matches, make no changes to the schema of the database. _This is the default
+       value of **HIBERNATE_HBM2DDL_AUTO**_
+    2. _update_: update the schema to reflect the entities being persisted
+    3. _create_: creates the schema necessary for your entities, destroying any previous data.
+    4. _create-drop_: create the schema as in create above, but also drop the schema at the end of the session. This is
+       great in development or for testing.

@@ -24,12 +24,14 @@ public class TranslationMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "appid")
-    private String appid;
-    @Parameter(property = "apiSecret")
-    private String apiSecret;
-    @Parameter(property = "apiKey")
-    private String apiKey;
+//    @Parameter(property = "appid")
+//    private String appid;
+//    @Parameter(property = "apiSecret")
+//    private String apiSecret;
+//    @Parameter(property = "apiKey")
+//    private String apiKey;
+
+
 
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
