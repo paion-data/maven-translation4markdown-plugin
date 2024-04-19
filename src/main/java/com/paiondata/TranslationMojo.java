@@ -1,16 +1,18 @@
 package com.paiondata;
 
+import com.paiondata.entity.FileResult;
 import com.paiondata.entity.SparkInfo;
-import com.paiondata.util.MarkdownFileReader;
+import com.paiondata.util.FileHandler;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 @Mojo(name = "translate", defaultPhase = LifecyclePhase.INSTALL)
 public class TranslationMojo extends AbstractMojo {
@@ -31,78 +33,29 @@ public class TranslationMojo extends AbstractMojo {
 //    @Parameter(property = "apiKey")
 //    private String apiKey;
 
-    String appid = "9ef2faca";
-    String apiSecret = "YmU3MGYyYTMxODM4ODFlNmEyOWEwNDk1";
-    String apiKey = "5a863ea65f88a876c03c4e7f389afa60";
-
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
-        List<String> currentFileList = getCurrentFileList();
+        List<String> currentFileList = FileHandler.getCurrentFileList();
 
-        // 获取当前输出路径文件列表
-        List<String> currentOutputFileList = getCurrentOutputFileList();
-
-        // 比较文件列表
-        List<String> newFiles = getNewFiles(currentFileList, currentOutputFileList);
+        // 生成输入路径文件哈希
+        Map<String, String> fileHash;
+        try {
+            fileHash = FileHandler.generateFileHash(currentFileList);
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        // 获取输出路径文件列表
+        FileResult fileResult = FileHandler.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
 
         // 删除输出目录
-        deletedFiles(currentFileList, currentOutputFileList);
+        FileHandler.deletedFiles(fileResult.getDeletedKeys());
+        FileHandler.deletedFiles(fileResult.getUpdatedKeys());
 
         // 执行翻译逻辑
-        if (!newFiles.isEmpty()) {
+        if (!fileResult.getAddedKeys().isEmpty() || !fileResult.getUpdatedKeys().isEmpty()) {
             // 执行翻译逻辑
-            translateFiles(newFiles);
-        }
-
-    }
-
-    // 获取当前输入文件列表的方法
-    private List<String> getCurrentFileList() {
-        // 实现获取当前输入目录的文件列表的逻辑
-        return MarkdownFileReader.getAllMarkdownFiles(DEFAULT_INPUT_PATH);
-    }
-
-    // 获取当前输出文件列表的方法
-    private List<String> getCurrentOutputFileList() {
-        // 实现获取当前输入目录的文件列表的逻辑
-        return MarkdownFileReader.getAllMarkdownFiles(DEFAULT_OUTPUT_PATH);
-    }
-
-    // 获取新增文件的方法
-    private List<String> getNewFiles(List<String> currentFileList, List<String> currentOutputFileList) {
-        List<String> newFiles = new ArrayList<>();
-        for (String file : currentFileList) {
-            String[] split = file.split("/");
-            if (!currentOutputFileList.contains(DEFAULT_OUTPUT_PATH2 + "/" + split[split.length - 1].replace(".md", "-output.md"))) {
-                newFiles.add(file);
-                System.out.println("新增文件: " + file);
-            }
-        }
-        return newFiles;
-    }
-
-    // 获取被删除文件的方法
-    private void deletedFiles(List<String> currentFileList, List<String> currentOutputFileList) {
-        for (String file : currentOutputFileList) {
-            String[] split = file.split("/");
-            if (!currentFileList.contains(DEFAULT_INPUT_PATH + "/" + split[split.length - 1].replace("-output.md", ".md"))) {
-                // 创建 File 对象
-                File deleteFile = new File(file);
-
-                System.out.println(deleteFile.getName());
-
-                // 检查文件是否存在
-                if (deleteFile.exists()) {
-                    // 尝试删除文件
-                    if (deleteFile.delete()) {
-                        System.out.println("文件删除成功: " + file);
-                    } else {
-                        System.out.println("无法删除文件: " + file);
-                    }
-                } else {
-                    System.out.println("文件不存在: " + file);
-                }
-            }
+            translateFiles(fileResult.getAddedKeys());
+            translateFiles(fileResult.getUpdatedKeys());
         }
     }
 

@@ -190,7 +190,6 @@ public class SparkAI extends WebSocketListener {
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
-        // System.out.println(userId + "用来区分那个用户的结果" + text);
         JsonParse myJsonParse = gson.fromJson(text, JsonParse.class);
         if (myJsonParse.header.code != 0) {
             System.out.println("发生错误，错误码为：" + myJsonParse.header.code);
@@ -199,13 +198,10 @@ public class SparkAI extends WebSocketListener {
         }
         List<Text> textList = myJsonParse.payload.choices.text;
         for (Text temp : textList) {
-            System.out.print(temp.content);
             totalAnswer=totalAnswer+temp.content;
         }
         if (myJsonParse.header.status == 2) {
             // 可以关闭连接，释放资源
-            System.out.println();
-            System.out.println("*************************************************************************************");
             if(canAddHistory()){
                 RoleContent roleContent=new RoleContent();
                 roleContent.setRole("assistant");
