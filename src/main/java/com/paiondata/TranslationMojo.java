@@ -33,6 +33,8 @@ public class TranslationMojo extends AbstractMojo {
 //    @Parameter(property = "apiKey")
 //    private String apiKey;
 
+
+
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
         List<String> currentFileList = FileHandler.getCurrentFileList();
