@@ -1,5 +1,7 @@
 package com.paiondata.Util;
 
+import static com.paiondata.TranslationMojo.DEFAULT_INPUT_PATH;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,7 +19,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +33,46 @@ public class FileHandlerTest {
     @TempDir
     Path tempDir;
 
+    // 测试生成Hash码
+    @Test
+    public void generateFileHashTest() throws IOException, NoSuchAlgorithmException {
+        List<String> currentFileList = FileHandler.getCurrentFileList(DEFAULT_INPUT_PATH);
+        Map<String, String> generatedHashes = FileHandler.generateFileHash(currentFileList);
+        assertNotNull(generatedHashes, "Generated hashes should not be null");
+    }
+
     // 测试获取当前目录的方法
     @Test
     public void testGetCurrentFileList() {
-
-        List<String> currentFileList = FileHandler.getCurrentFileList();
+        List<String> currentFileList = FileHandler.getCurrentFileList(DEFAULT_INPUT_PATH);
 
         // 验证返回的文件列表非空
         assertNotNull(currentFileList);
         assertFalse(currentFileList.isEmpty(), "Expected non-empty file list");
 
         // 验证文件列表包含预期的文件名（根据实际测试需求添加）
-        assertTrue(currentFileList.contains("docs/2.md"), "Expected file 'docs/2.md' missing");
+        assertTrue(currentFileList.contains("docs/example.md"), "Expected file 'example.md' missing");
     }
+
+    // 测试删除方法
+    @Test
+    public void testDeletedFiles() throws IOException {
+        String directory = tempDir.toString();
+        new File(directory, "test01-output.md").createNewFile();
+        new File(directory, "test02-output.md").createNewFile();
+        new File(directory, "test03-output.md").createNewFile();
+
+        List<String> fileList = new ArrayList<>();
+        fileList.add("docs/test01.md");
+        fileList.add("docs/test02.md");
+
+        FileHandler.deletedFiles(fileList, directory);
+        assertFalse(new File(directory, "test01-output.md").exists());
+        assertFalse(new File(directory, "test02-output.md").exists());
+        // test03-output.md没被删除
+        assertTrue(new File(directory, "test03-output.md").exists());
+    }
+
 
     // 测试 syncFileWithMap 方法-模拟添加键值对
     @Test

@@ -26,18 +26,16 @@ public class TranslationMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-//    @Parameter(property = "appid")
-//    private String appid;
-//    @Parameter(property = "apiSecret")
-//    private String apiSecret;
-//    @Parameter(property = "apiKey")
-//    private String apiKey;
-
-
+    @Parameter(property = "appid")
+    private String appid;
+    @Parameter(property = "apiSecret")
+    private String apiSecret;
+    @Parameter(property = "apiKey")
+    private String apiKey;
 
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
-        List<String> currentFileList = FileHandler.getCurrentFileList();
+        List<String> currentFileList = FileHandler.getCurrentFileList(DEFAULT_INPUT_PATH);
 
         // 生成输入路径文件哈希
         Map<String, String> fileHash;
@@ -50,8 +48,8 @@ public class TranslationMojo extends AbstractMojo {
         FileResult fileResult = FileHandler.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
 
         // 删除输出目录
-        FileHandler.deletedFiles(fileResult.getDeletedKeys());
-        FileHandler.deletedFiles(fileResult.getUpdatedKeys());
+        FileHandler.deletedFiles(fileResult.getDeletedKeys(), DEFAULT_OUTPUT_PATH2);
+        FileHandler.deletedFiles(fileResult.getUpdatedKeys(), DEFAULT_OUTPUT_PATH2);
 
         // 执行翻译逻辑
         if (!fileResult.getAddedKeys().isEmpty() || !fileResult.getUpdatedKeys().isEmpty()) {

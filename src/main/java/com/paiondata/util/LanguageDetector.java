@@ -27,13 +27,4 @@ public class LanguageDetector {
             return "中文";
         }
     }
-
-    public static void main(String[] args) {
-        // 测试
-        String text1 = "Hello, world!";
-        String text2 = "你好，世界！";
-
-        System.out.println(detectLanguage(text1));  // 输出：EN
-        System.out.println(detectLanguage(text2));  // 输出：CHS
-    }
 }

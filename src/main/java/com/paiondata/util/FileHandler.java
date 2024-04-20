@@ -1,8 +1,5 @@
 package com.paiondata.util;
 
-import static com.paiondata.TranslationMojo.DEFAULT_INPUT_PATH;
-import static com.paiondata.TranslationMojo.DEFAULT_OUTPUT_PATH2;
-
 import com.paiondata.entity.FileResult;
 
 import java.io.BufferedReader;
@@ -20,19 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FileHandler {
-
-    private static void getAllNonEmptyMarkdownFiles(File directory, List<String> markdownFiles) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    getAllNonEmptyMarkdownFiles(file, markdownFiles);
-                } else if (file.isFile() && file.getName().toLowerCase().endsWith(".md") && file.length() > 0) {
-                    markdownFiles.add(directory + "/" +file.getName());
-                }
-            }
-        }
-    }
 
     // 生成文件哈希的方法
     public static Map<String, String> generateFileHash(List<String> files) throws IOException, NoSuchAlgorithmException {
@@ -58,11 +42,11 @@ public class FileHandler {
         return map;
     }
 
-    // 获取当前输入文件列表的方法
-    public static List<String> getCurrentFileList() {
+    // 获取当前输入路径md文件列表的方法
+    public static List<String> getCurrentFileList(String inputPath) {
         // 实现获取当前输入目录的文件列表的逻辑
         List<String> markdownFiles = new ArrayList<>();
-        File directory = new File(DEFAULT_INPUT_PATH);
+        File directory = new File(inputPath);
         if (directory.exists() && directory.isDirectory()) {
             getAllNonEmptyMarkdownFiles(directory, markdownFiles);
         } else {
@@ -71,11 +55,24 @@ public class FileHandler {
         return markdownFiles;
     }
 
+    private static void getAllNonEmptyMarkdownFiles(File directory, List<String> markdownFiles) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    getAllNonEmptyMarkdownFiles(file, markdownFiles);
+                } else if (file.isFile() && file.getName().toLowerCase().endsWith(".md") && file.length() > 0) {
+                    markdownFiles.add(directory + "/" +file.getName());
+                }
+            }
+        }
+    }
+
     // 删除文件的方法
-    public static void deletedFiles(List<String> fileList) {
+    public static void deletedFiles(List<String> fileList, String outputPath) {
         for (String file : fileList) {
             String[] split = file.split("/");
-            file = DEFAULT_OUTPUT_PATH2 + "/" + split[split.length - 1].replace(".md", "-output.md");
+            file = outputPath+ "/" + split[split.length - 1].replace(".md", "-output.md");
             // 创建 File 对象
             File deleteFile = new File(file);
 
