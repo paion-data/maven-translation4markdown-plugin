@@ -1,4 +1,4 @@
-# AI Markdown Maven翻译插件
+# AI Markdown Maven Translate Plugin
 
 **查看中文版本**
 - [点击这里查看中文版本](README-CN.md)
