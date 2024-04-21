@@ -1,5 +1,7 @@
 package com.paiondata.util;
 
+import static com.paiondata.TranslationMojo.DEFAULT_OUTPUT_PATH2;
+
 import com.paiondata.entity.FileResult;
 
 import java.io.BufferedReader;
@@ -9,8 +11,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +48,11 @@ public class FileHandler {
         return map;
     }
 
-    // 获取当前输入路径md文件列表的方法
-    public static List<String> getCurrentFileList(String inputPath) {
+    // 获取当前路径md文件列表的方法
+    public static List<String> getCurrentFileList(String path) {
         // 实现获取当前输入目录的文件列表的逻辑
         List<String> markdownFiles = new ArrayList<>();
-        File directory = new File(inputPath);
+        File directory = new File(path);
         if (directory.exists() && directory.isDirectory()) {
             getAllNonEmptyMarkdownFiles(directory, markdownFiles);
         } else {
@@ -90,15 +96,25 @@ public class FileHandler {
         }
     }
 
-    // 文件目录操作
+    // 目录检查
     public static FileResult syncFileWithMap(String directory, Map<String, String> map) {
         List<String> addedKeys = new ArrayList<>();
         List<String> updatedKeys = new ArrayList<>();
         List<String> deletedKeys = new ArrayList<>();
 
+        // 如果目录不存在，则创建
+        Path path = Paths.get(directory);
+        try {
+            Files.createDirectories(path);
+            System.out.println("目录已创建：" + directory);
+        } catch (IOException e) {
+            System.err.println("无法创建目录：" + directory);
+            e.printStackTrace();
+        }
+
         File file = new File(directory, "file.txt");
 
-        // 将现有文件内容存入Map中
+        // 将txt内容存入Map中
         Map<String, String> fileMap = new HashMap<>();
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -109,6 +125,38 @@ public class FileHandler {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        // 处理文本内容与实际不符的md文件
+        List<String> fileList = getCurrentFileList(directory);
+        for (String f : fileList) {
+            String[] split = f.split("/");
+            String fileName = "docs" + "/" + split[split.length - 1].replace("-output.md", ".md");
+            if (!fileMap.containsKey(fileName)) {
+                System.out.println("移除文件: " + directory + "/" + split[split.length - 1]);
+
+                String[] split1 = f.split("/");
+                fileName = directory + "/" + split1[split.length - 1].replace("-output.md", ".md");
+                File deleteFile = new File(fileName);
+                // 检查文件是否存在
+                if (deleteFile.exists()) {
+                    // 尝试删除文件
+                    if (!deleteFile.delete()) {
+                        System.out.println("无法删除文件: " + fileName);
+                    }
+                } else {
+                    System.out.println("文件不存在: " + fileName);
+                }
+            }
+        }
+
+        for (String key : fileMap.keySet()) {
+            String[] split = key.split("/");
+            String afterSplit = DEFAULT_OUTPUT_PATH2 + "/" + split[split.length - 1].replace(".md", "-output.md");
+            if (!fileList.contains(afterSplit)) {
+                System.out.println("新增文件: " + key);
+                addedKeys.add(key);
             }
         }
 

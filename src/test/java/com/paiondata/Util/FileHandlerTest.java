@@ -30,8 +30,10 @@ import java.util.Map;
 public class FileHandlerTest {
 
     // 临时路径
-    @TempDir
-    Path tempDir;
+    private static final String TEMP_PATH01 = "src/test/java/com/paiondata/testPath01";
+    private static final String TEMP_PATH02 = "src/test/java/com/paiondata/testPath02";
+    private static final String TEMP_PATH03 = "src/test/java/com/paiondata/testPath03";
+    private static final String TEMP_PATH04 = "src/test/java/com/paiondata/testPath04";
 
     // 测试生成Hash码
     @Test
@@ -57,7 +59,7 @@ public class FileHandlerTest {
     // 测试删除方法
     @Test
     public void testDeletedFiles() throws IOException {
-        String directory = tempDir.toString();
+        String directory = TEMP_PATH01;
         new File(directory, "test01-output.md").createNewFile();
         new File(directory, "test02-output.md").createNewFile();
         new File(directory, "test03-output.md").createNewFile();
@@ -71,13 +73,15 @@ public class FileHandlerTest {
         assertFalse(new File(directory, "test02-output.md").exists());
         // test03-output.md没被删除
         assertTrue(new File(directory, "test03-output.md").exists());
+
+        deleteFilesInDirectory(directory);
     }
 
 
     // 测试 syncFileWithMap 方法-模拟添加键值对
     @Test
     public void testSyncFileWithMap_AddedKeys() throws Exception {
-        String directory = tempDir.toString();
+        String directory = TEMP_PATH02;
         Map<String, String> inputMap = new HashMap<>();
         inputMap.put("key1", "value1");
         inputMap.put("key2", "value2");
@@ -101,12 +105,14 @@ public class FileHandlerTest {
         assertEquals("key2:value2", reader.readLine());
         assertNull(reader.readLine());
         reader.close();
+
+        deleteFilesInDirectory(directory);
     }
 
     // 测试 syncFileWithMap 方法-模拟更新键值对
     @Test
     public void testSyncFileWithMap_UpdatedKeys() throws Exception {
-        String directory = tempDir.toString();
+        String directory = TEMP_PATH03;
         File file = new File(directory, "file.txt");
 
         // 初始化文件
@@ -133,12 +139,14 @@ public class FileHandlerTest {
         assertEquals("key3:value3", reader.readLine()); // 新增的值
         assertNull(reader.readLine());
         reader.close();
+
+        deleteFilesInDirectory(directory);
     }
 
     // 测试 syncFileWithMap 方法-模拟删除键值对
     @Test
     public void testSyncFileWithMap_DeletedKeys() throws Exception {
-        String directory = tempDir.toString();
+        String directory = TEMP_PATH04;
         File file = new File(directory, "file.txt");
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -153,7 +161,6 @@ public class FileHandlerTest {
         FileResult result = FileHandler.syncFileWithMap(directory, inputMap);
 
         assertNotNull(result);
-        assertTrue(result.getAddedKeys().isEmpty());
         assertTrue(result.getUpdatedKeys().isEmpty());
         assertTrue(result.getDeletedKeys().contains("key2")); // key2应该被删除
         assertTrue(file.exists());
@@ -162,6 +169,29 @@ public class FileHandlerTest {
         assertEquals("key1:value1", reader.readLine()); // 保持的的key还在
         assertNull(reader.readLine()); // 没了
         reader.close();
+
+        deleteFilesInDirectory(directory);
+    }
+
+    // 删除指定目录下所有文件
+    private static void deleteFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+
+        // 确保目录存在且是一个目录
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    // 删除文件
+                    if (!file.isDirectory()) {
+                        file.delete();
+                        System.out.println("Deleted file: " + file.getAbsolutePath());
+                    }
+                }
+            }
+        } else {
+            System.err.println("Directory does not exist or is not a directory: " + directoryPath);
+        }
     }
 
 }

@@ -16,7 +16,6 @@ import java.util.Map;
 
 @Mojo(name = "translate", defaultPhase = LifecyclePhase.INSTALL)
 public class TranslationMojo extends AbstractMojo {
-
     public static final String DEFAULT_INPUT_PATH = "docs";
 
     public static final String DEFAULT_OUTPUT_PATH = "i18n/zh-cn/docusaurus-plugin-content-docs/current";
@@ -26,12 +25,16 @@ public class TranslationMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(property = "appid")
-    private String appid;
-    @Parameter(property = "apiSecret")
-    private String apiSecret;
-    @Parameter(property = "apiKey")
-    private String apiKey;
+//    @Parameter(property = "appid")
+//    private String appid;
+//    @Parameter(property = "apiSecret")
+//    private String apiSecret;
+//    @Parameter(property = "apiKey")
+//    private String apiKey;
+
+    String appid = "9ef2faca";
+    String apiSecret = "YmU3MGYyYTMxODM4ODFlNmEyOWEwNDk1";
+    String apiKey = "5a863ea65f88a876c03c4e7f389afa60";
 
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
