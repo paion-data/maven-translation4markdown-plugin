@@ -25,16 +25,12 @@ public class TranslationMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-//    @Parameter(property = "appid")
-//    private String appid;
-//    @Parameter(property = "apiSecret")
-//    private String apiSecret;
-//    @Parameter(property = "apiKey")
-//    private String apiKey;
-
-    String appid = "9ef2faca";
-    String apiSecret = "YmU3MGYyYTMxODM4ODFlNmEyOWEwNDk1";
-    String apiKey = "5a863ea65f88a876c03c4e7f389afa60";
+    @Parameter(property = "appid")
+    private String appid;
+    @Parameter(property = "apiSecret")
+    private String apiSecret;
+    @Parameter(property = "apiKey")
+    private String apiKey;
 
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表

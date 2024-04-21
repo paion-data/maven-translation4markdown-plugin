@@ -41,10 +41,4 @@ public class CreateClient {
             sparkTranslateSingle(info, DEFAULT_OUTPUT_PATH, file);
         }
     }
-
-    public static void main(String[] args) throws MojoExecutionException {
-        TranslationMojo mojo = new TranslationMojo();
-        mojo.execute();
-    }
-
 }

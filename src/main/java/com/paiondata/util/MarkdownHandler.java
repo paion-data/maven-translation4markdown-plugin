@@ -27,7 +27,7 @@ public class MarkdownHandler {
                 String trans;
                 MarkdownFileContent fileContent2 = readFile(params[3]);
                 String detectLanguage = LanguageDetector.detectLanguage(fileContent2.getContent());
-                String content2 = "请帮我将Markdown文档翻译成" + detectLanguage + ", 这个是提供的Markdown文档:\n"
+                String content2 = "请帮我将Markdown文档翻译成英文"
                         + fileContent2.getContent();
                 trans = SparkAI.getAnswer(params[0], params[1], params[2], content2);
                 createOutputFile(params[4], fileContent2, trans);
