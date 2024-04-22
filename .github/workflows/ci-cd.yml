@@ -1,6 +1,8 @@
-name: Publish to Maven Central
+---
+name: CI/CD
 
-on:
+"on":
+  pull_request:
   push:
     branches:
       - master
@@ -8,18 +10,10 @@ on:
 jobs:
   release:
     name: Release to Maven Central
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: Build and deploy
+      - name: Release
         uses: paion-data/maven-central-release-action@master
         with:
           user: redo
