@@ -24,8 +24,8 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com:paion-data/ai-translation4markdown-Java.git</developerConnection>
-        <url>https://github.com/paion-data/ai-translation4markdown-Java.git</url>
+        <developerConnection>scm:git:ssh://git@github.com:paion-data/maven-translation4markdown-plugin.git</developerConnection>
+        <url>https://github.com/paion-data/maven-translation4markdown-plugin.git</url>
         <tag>HEAD</tag>
     </scm>
 
