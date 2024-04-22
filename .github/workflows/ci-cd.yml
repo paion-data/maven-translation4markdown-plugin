@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        run: mvn clean install
+        run: mvn clean package
       - name: Release
         uses: paion-data/maven-central-release-action@master
         with:
