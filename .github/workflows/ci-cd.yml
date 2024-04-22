@@ -13,8 +13,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
+      - name: Change directory to project root
+        run: cd maven-translation4markdown-plugin
       - name: Build
-        run: mvn clean package
+        run: mvn clean install
       - name: Release
         uses: paion-data/maven-central-release-action@master
         with:
