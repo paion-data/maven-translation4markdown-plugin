@@ -88,7 +88,7 @@ public class FileHandlerTest {
 
         FileResult result = FileHandler.syncFileWithMap(directory, inputMap);
 
-        // 验证返回的 FileResult 不为 null。
+        // 验证返回的 FileResult 不为 null
         assertNotNull(result);
         // 验证 FileResult 中的 addedKeys 是否包含了 inputMap 中的所有键，即新添加的键都被正确识别
         assertTrue(result.getAddedKeys().containsAll(inputMap.keySet()));
