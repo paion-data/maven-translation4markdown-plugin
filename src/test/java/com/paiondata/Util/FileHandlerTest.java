@@ -96,7 +96,7 @@ public class FileHandlerTest {
         assertTrue(result.getUpdatedKeys().isEmpty());
         assertTrue(result.getDeletedKeys().isEmpty());
 
-        // 检查文件是否已成功创建在指定目录下。
+        // 检查文件是否已成功创建在指定目录下
         File file = new File(directory, "file.txt");
         assertTrue(file.exists());
         // 通过 BufferedReader 读取新创建的文件内容，逐行验证其内容与 inputMap 中的数据一致
