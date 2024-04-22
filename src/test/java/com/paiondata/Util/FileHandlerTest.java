@@ -167,7 +167,7 @@ public class FileHandlerTest {
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
         assertEquals("key1:value1", reader.readLine()); // 保持的的key还在
-        assertNull(reader.readLine()); // 没了
+        assertNull(reader.readLine()); //
         reader.close();
 
         deleteFilesInDirectory(directory);
