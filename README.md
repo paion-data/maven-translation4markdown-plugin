@@ -68,7 +68,7 @@ This tool uses AI services to implement the translation function of Markdown doc
     ...
 </settings>
 ```
-Add placeholders in the POM file of the Maven plugin
+3. **Configure in Maven's`settings.xml`file**
 ```
 <plugin>
     <groupId>com.paiondata</groupId>

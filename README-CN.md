@@ -71,7 +71,7 @@
     ...
 </settings>
 ```
-在 Maven 插件的 POM 文件中添加占位符
+3. **在 Maven 插件的 POM 文件中添加占位符**
 ```
 <plugin>
     <groupId>com.paiondata</groupId>
