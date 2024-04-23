@@ -11,6 +11,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -68,7 +70,7 @@ public class SparkAI extends WebSocketListener {
             header.put("uid", UUID.randomUUID().toString().substring(0, 10));
             JSONObject parameter = new JSONObject();
             JSONObject chat = new JSONObject();
-            chat.put("domain", "generalv2");
+            chat.put("domain", "generalv3.5");
             chat.put("temperature", 0.5);
             chat.put("max_tokens", 4096);
             parameter.put("chat", chat);
