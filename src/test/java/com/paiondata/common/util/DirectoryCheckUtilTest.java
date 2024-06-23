@@ -1,6 +1,4 @@
-package com.paiondata.Util;
-
-import static com.paiondata.TranslationMojo.DEFAULT_INPUT_PATH;
+package com.paiondata.common.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,11 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.paiondata.entity.FileResult;
-import com.paiondata.util.FileHandler;
+import com.paiondata.TranslationMojo;
+import com.paiondata.common.entity.FileResult;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,59 +19,63 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FileHandlerTest {
+@Slf4j
+public class DirectoryCheckUtilTest {
 
     // 临时路径
-    private static final String TEMP_PATH01 = "src/test/java/com/paiondata/testPath01";
-    private static final String TEMP_PATH02 = "src/test/java/com/paiondata/testPath02";
-    private static final String TEMP_PATH03 = "src/test/java/com/paiondata/testPath03";
-    private static final String TEMP_PATH04 = "src/test/java/com/paiondata/testPath04";
+    private static final String TEMP_PATH01 = "src" + File.separator + "test" + File.separator + "java" + File.separator
+            + "com" + File.separator + "paiondata" + File.separator + "testPath01";
+    private static final String TEMP_PATH02 = "src" + File.separator + "test" + File.separator + "java" + File.separator
+            + "com" + File.separator + "paiondata" + File.separator + "testPath02";
+    private static final String TEMP_PATH03 = "src" + File.separator + "test" + File.separator + "java" + File.separator
+            + "com" + File.separator + "paiondata" + File.separator + "testPath03";
+    private static final String TEMP_PATH04 = "src" + File.separator + "test" + File.separator + "java" + File.separator
+            + "com" + File.separator + "paiondata" + File.separator + "testPath04";
 
     // 测试生成Hash码
     @Test
     public void generateFileHashTest() throws IOException, NoSuchAlgorithmException {
-        List<String> currentFileList = FileHandler.getCurrentFileList(DEFAULT_INPUT_PATH);
-        Map<String, String> generatedHashes = FileHandler.generateFileHash(currentFileList);
+        List<String> currentFileList = DirectoryCheckUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
+        Map<String, String> generatedHashes = DirectoryCheckUtil.generateFileHash(currentFileList);
         assertNotNull(generatedHashes, "Generated hashes should not be null");
     }
 
     // 测试获取当前目录的方法
     @Test
     public void testGetCurrentFileList() {
-        List<String> currentFileList = FileHandler.getCurrentFileList(DEFAULT_INPUT_PATH);
+        List<String> currentFileList = DirectoryCheckUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
 
         // 验证返回的文件列表非空
         assertNotNull(currentFileList);
         assertFalse(currentFileList.isEmpty(), "Expected non-empty file list");
 
         // 验证文件列表包含预期的文件名（根据实际测试需求添加）
-        assertTrue(currentFileList.contains("docs/example.md"), "Expected file 'example.md' missing");
+        assertTrue(currentFileList.contains("docs" + File.separator + "example.md"), "Expected file missing");
     }
 
     // 测试删除方法
     @Test
     public void testDeletedFiles() throws IOException {
         String directory = TEMP_PATH01;
-        new File(directory, "test01-output.md").createNewFile();
-        new File(directory, "test02-output.md").createNewFile();
-        new File(directory, "test03-output.md").createNewFile();
+        new File(directory, "test01.md").createNewFile();
+        new File(directory, "test02.md").createNewFile();
+        new File(directory, "test03.md").createNewFile();
 
         List<String> fileList = new ArrayList<>();
-        fileList.add("docs/test01.md");
-        fileList.add("docs/test02.md");
+        fileList.add("docs" + File.separator + "test01.md");
+        fileList.add("docs" + File.separator + "test02.md");
 
-        FileHandler.deletedFiles(fileList, directory);
-        assertFalse(new File(directory, "test01-output.md").exists());
-        assertFalse(new File(directory, "test02-output.md").exists());
-        // test03-output.md没被删除
-        assertTrue(new File(directory, "test03-output.md").exists());
+        DirectoryCheckUtil.deleteFile(fileList, directory);
+        assertFalse(new File(directory, "test01.md").exists());
+        assertFalse(new File(directory, "test02.md").exists());
+        // test03.md没被删除
+        assertTrue(new File(directory, "test03.md").exists());
 
         deleteFilesInDirectory(directory);
     }
@@ -86,7 +89,7 @@ public class FileHandlerTest {
         inputMap.put("key1", "value1");
         inputMap.put("key2", "value2");
 
-        FileResult result = FileHandler.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
 
         // 验证返回的 FileResult 不为 null
         assertNotNull(result);
@@ -126,7 +129,7 @@ public class FileHandlerTest {
         inputMap.put("key1", "updatedValue1"); // 更新现有的key
         inputMap.put("key3", "value3"); // 添加一个key
 
-        FileResult result = FileHandler.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
 
         assertNotNull(result);
         assertTrue(result.getAddedKeys().contains("key3"));
@@ -158,7 +161,7 @@ public class FileHandlerTest {
         Map<String, String> inputMap = new HashMap<>();
         inputMap.put("key1", "value1"); // 保持key1
 
-        FileResult result = FileHandler.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
 
         assertNotNull(result);
         assertTrue(result.getUpdatedKeys().isEmpty());
@@ -185,12 +188,13 @@ public class FileHandlerTest {
                     // 删除文件
                     if (!file.isDirectory()) {
                         file.delete();
-                        System.out.println("Deleted file: " + file.getAbsolutePath());
+
+                        log.warn("删除文件：" + file.getAbsolutePath());
                     }
                 }
             }
         } else {
-            System.err.println("Directory does not exist or is not a directory: " + directoryPath);
+            log.error("目录不存在或不是一个目录：" + directoryPath);
         }
     }
 

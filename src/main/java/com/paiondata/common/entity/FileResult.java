@@ -1,4 +1,4 @@
-package com.paiondata.entity;
+package com.paiondata.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GitChangesFiles {
-    private List<String> addedFiles;
-    private List<String> deletedFiles;
-    private List<String> modifiedFiles;
+public class FileResult {
+
+    private List<String> addedKeys;
+
+    private List<String> updatedKeys;
+
+    private List<String> deletedKeys;
 }

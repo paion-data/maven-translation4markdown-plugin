@@ -1,8 +1,8 @@
-package com.paiondata.Util;
+package com.paiondata.common.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.paiondata.util.LanguageDetector;
+import com.paiondata.common.util.LanguageDetector;
 
 import org.junit.jupiter.api.Test;
 

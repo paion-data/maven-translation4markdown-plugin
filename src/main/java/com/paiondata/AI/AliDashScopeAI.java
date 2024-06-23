@@ -12,7 +12,7 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 
 public class AliDashScopeAI {
 
-    public static String callWithMessage(String apiKey, String content, Boolean mode)
+    public static String callWithMessage(String apiKey, Boolean mode, String content)
             throws NoApiKeyException, ApiException, InputRequiredException {
         Generation gen = new Generation();
         MessageManager msgManager = new MessageManager(10);

@@ -1,4 +1,4 @@
-package com.paiondata.entity;
+package com.paiondata.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

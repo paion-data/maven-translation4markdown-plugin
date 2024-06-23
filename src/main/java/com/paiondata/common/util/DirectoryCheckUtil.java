@@ -1,8 +1,12 @@
-package com.paiondata.util;
+package com.paiondata.common.util;
 
-import static com.paiondata.TranslationMojo.DEFAULT_OUTPUT_PATH2;
+import com.paiondata.TranslationMojo;
+import com.paiondata.common.constant.MessageConstant;
+import com.paiondata.common.entity.FileResult;
+import com.paiondata.common.exception.DirectoryException;
+import com.paiondata.common.exception.FileDeleteException;
 
-import com.paiondata.entity.FileResult;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FileHandler {
+@Slf4j
+public class DirectoryCheckUtil {
 
     // 生成文件哈希的方法
     public static Map<String, String> generateFileHash(List<String> files) throws IOException, NoSuchAlgorithmException {
@@ -55,7 +60,7 @@ public class FileHandler {
         if (directory.exists() && directory.isDirectory()) {
             getAllNonEmptyMarkdownFiles(directory, markdownFiles);
         } else {
-            System.out.println("Directory does not exist or is not a directory.");
+            throw new DirectoryException(MessageConstant.DIRECTORY_ERROR + path);
         }
         return markdownFiles;
     }
@@ -74,23 +79,21 @@ public class FileHandler {
     }
 
     // 删除文件的方法
-    public static void deletedFiles(List<String> fileList, String outputPath) {
+    public static void deleteFile(List<String> fileList, String outputPath) {
         for (String file : fileList) {
-            String[] split = file.split(File.separator);
-            file = outputPath+ File.separator + split[split.length - 1].replace(".md", "-output.md");
+            String[] split = file.split("/");
+            file = outputPath+ File.separator + split[split.length - 1].replace("docs\\", "");
             // 创建 File 对象
             File deleteFile = new File(file);
-
-            System.out.println(deleteFile.getName());
 
             // 检查文件是否存在
             if (deleteFile.exists()) {
                 // 尝试删除文件
                 if (!deleteFile.delete()) {
-                    System.out.println("无法删除文件: " + file);
+                    throw new FileDeleteException(MessageConstant.FILE_DELETE_ERROR + file);
                 }
             } else {
-                System.out.println("文件不存在: " + file);
+                throw new FileDeleteException(MessageConstant.FILE_NOT_EXIST + file);
             }
         }
     }
@@ -103,12 +106,13 @@ public class FileHandler {
 
         // 如果目录不存在，则创建
         Path path = Paths.get(directory);
-        try {
-            Files.createDirectories(path);
-            System.out.println("目录已创建：" + directory);
-        } catch (IOException e) {
-            System.err.println("无法创建目录：" + directory);
-            e.printStackTrace();
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+                log.info("目录已创建：" + directory);
+            } catch (IOException e) {
+                log.error("无法创建目录：" + directory);
+            }
         }
 
         File file = new File(directory, "file.txt");
@@ -131,30 +135,30 @@ public class FileHandler {
         List<String> fileList = getCurrentFileList(directory);
         for (String f : fileList) {
             String[] split = f.split(File.separator);
-            String fileName = "docs" + File.separator + split[split.length - 1].replace("-output.md", ".md");
+            String fileName = "docs" + File.separator + split[split.length - 1];
             if (!fileMap.containsKey(fileName)) {
-                System.out.println("移除文件: " + directory + File.separator + split[split.length - 1]);
+                log.warn("移除文件：" + directory + File.separator + split[split.length - 1]);
 
                 String[] split1 = f.split(File.separator);
-                fileName = directory + File.separator + split1[split.length - 1].replace("-output.md", ".md");
-                File deleteFile = new File(fileName);
+                fileName = directory + File.separator + split1[split.length - 1];
+                File file2bDelete = new File(fileName);
                 // 检查文件是否存在
-                if (deleteFile.exists()) {
+                if (file2bDelete.exists()) {
                     // 尝试删除文件
-                    if (!deleteFile.delete()) {
-                        System.out.println("无法删除文件: " + fileName);
+                    if (!file2bDelete.delete()) {
+                        throw new FileDeleteException(MessageConstant.FILE_DELETE_ERROR + fileName);
                     }
                 } else {
-                    System.out.println("文件不存在: " + fileName);
+                    throw new FileDeleteException(MessageConstant.FILE_NOT_EXIST + fileName);
                 }
             }
         }
 
         for (String key : fileMap.keySet()) {
-            String[] split = key.split(File.separator);
-            String afterSplit = DEFAULT_OUTPUT_PATH2 + File.separator + split[split.length - 1].replace(".md", "-output.md");
+            String[] split = key.split("/");
+            String afterSplit = TranslationMojo.DEFAULT_OUTPUT_PATH + File.separator + split[split.length - 1];
             if (!fileList.contains(afterSplit)) {
-                System.out.println("新增文件: " + key);
+                log.info("新增文件：" + key);
                 addedKeys.add(key);
             }
         }
@@ -165,10 +169,10 @@ public class FileHandler {
             String value = entry.getValue();
             String oldValue = fileMap.get(key);
             if (oldValue == null) {
-                System.out.println("新增文件: " + key);
+                log.info("新增文件：" + key);
                 addedKeys.add(key);
             } else if (!oldValue.equals(value)) {
-                System.out.println("更新文件: " + key);
+                log.info("更新文件：" + key);
                 updatedKeys.add(key);
             }
         }
@@ -179,7 +183,7 @@ public class FileHandler {
         // 找到删除的K
         for (String key : fileMap.keySet()) {
             if (!map.containsKey(key)) {
-                System.out.println("移除文件: " + key);
+                log.warn("移除文件：" + key);
                 deletedKeys.add(key);
             }
         }

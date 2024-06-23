@@ -1,4 +1,4 @@
-package com.paiondata.util;
+package com.paiondata.common.util;
 
 public class LanguageDetector {
 
