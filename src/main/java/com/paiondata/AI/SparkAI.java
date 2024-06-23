@@ -72,7 +72,7 @@ public class SparkAI extends WebSocketListener {
             JSONObject chat = new JSONObject();
             chat.put("domain", "generalv3.5");
             chat.put("temperature", 0.5);
-            chat.put("max_tokens", 4096);
+            chat.put("max_tokens", 8192);
             parameter.put("chat", chat);
             JSONObject payload = new JSONObject();
             JSONObject message = new JSONObject();
