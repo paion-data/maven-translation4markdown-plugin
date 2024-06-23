@@ -67,7 +67,7 @@ public class FileHandler {
                 if (file.isDirectory()) {
                     getAllNonEmptyMarkdownFiles(file, markdownFiles);
                 } else if (file.isFile() && file.getName().toLowerCase().endsWith(".md") && file.length() > 0) {
-                    markdownFiles.add(directory + "/" +file.getName());
+                    markdownFiles.add(directory + File.separator +file.getName());
                 }
             }
         }
@@ -76,8 +76,8 @@ public class FileHandler {
     // 删除文件的方法
     public static void deletedFiles(List<String> fileList, String outputPath) {
         for (String file : fileList) {
-            String[] split = file.split("/");
-            file = outputPath+ "/" + split[split.length - 1].replace(".md", "-output.md");
+            String[] split = file.split(File.separator);
+            file = outputPath+ File.separator + split[split.length - 1].replace(".md", "-output.md");
             // 创建 File 对象
             File deleteFile = new File(file);
 
@@ -130,13 +130,13 @@ public class FileHandler {
         // 处理文本内容与实际不符的md文件
         List<String> fileList = getCurrentFileList(directory);
         for (String f : fileList) {
-            String[] split = f.split("/");
-            String fileName = "docs" + "/" + split[split.length - 1].replace("-output.md", ".md");
+            String[] split = f.split(File.separator);
+            String fileName = "docs" + File.separator + split[split.length - 1].replace("-output.md", ".md");
             if (!fileMap.containsKey(fileName)) {
-                System.out.println("移除文件: " + directory + "/" + split[split.length - 1]);
+                System.out.println("移除文件: " + directory + File.separator + split[split.length - 1]);
 
-                String[] split1 = f.split("/");
-                fileName = directory + "/" + split1[split.length - 1].replace("-output.md", ".md");
+                String[] split1 = f.split(File.separator);
+                fileName = directory + File.separator + split1[split.length - 1].replace("-output.md", ".md");
                 File deleteFile = new File(fileName);
                 // 检查文件是否存在
                 if (deleteFile.exists()) {
@@ -151,8 +151,8 @@ public class FileHandler {
         }
 
         for (String key : fileMap.keySet()) {
-            String[] split = key.split("/");
-            String afterSplit = DEFAULT_OUTPUT_PATH2 + "/" + split[split.length - 1].replace(".md", "-output.md");
+            String[] split = key.split(File.separator);
+            String afterSplit = DEFAULT_OUTPUT_PATH2 + File.separator + split[split.length - 1].replace(".md", "-output.md");
             if (!fileList.contains(afterSplit)) {
                 System.out.println("新增文件: " + key);
                 addedKeys.add(key);
