@@ -1,4 +1,4 @@
-package com.paiondata.Util;
+package com.paiondata.common.util;
 
 import static com.paiondata.TranslationMojo.DEFAULT_INPUT_PATH;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.paiondata.entity.MarkdownFileContent;
-import com.paiondata.util.IOHandler;
+import com.paiondata.common.entity.MarkdownFile;
+import com.paiondata.common.util.IOHandler;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -23,10 +23,10 @@ import java.nio.file.Paths;
 public class IOHandlerTest {
     @Test
     public void readMarkdownFileTest() throws IOException {
-        MarkdownFileContent markdownFileContent = IOHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
+        MarkdownFile markdownFile = IOHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
 
-        assertNotNull(markdownFileContent, "MarkdownFileContent object should not be null");
-        assertEquals("example.md", markdownFileContent.getFileName(), "File name should match the expected value");
+        assertNotNull(markdownFile, "MarkdownFile object should not be null");
+        assertEquals("example.md", markdownFile.getFileName(), "File name should match the expected value");
     }
 
     @Test

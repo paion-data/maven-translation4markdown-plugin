@@ -1,4 +1,4 @@
-package com.paiondata.Exception;
+package com.paiondata.common.exception;
 
 /**
  * 异常处理

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,6 +29,7 @@ import java.util.UUID;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+@Slf4j
 public class SparkAI extends WebSocketListener {
     // 地址与鉴权信息  https://spark-api.xf-yun.com/v1.1/chat   1.5地址  domain参数为general
     // 地址与鉴权信息  https://spark-api.xf-yun.com/v2.1/chat   2.0地址  domain参数为generalv2
@@ -194,8 +196,8 @@ public class SparkAI extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         JsonParse myJsonParse = gson.fromJson(text, JsonParse.class);
         if (myJsonParse.header.code != 0) {
-            System.out.println("发生错误，错误码为：" + myJsonParse.header.code);
-            System.out.println("本次请求的sid为：" + myJsonParse.header.sid);
+            log.error("发生错误，错误码为：" + myJsonParse.header.code);
+            log.error("本次请求的sid为：" + myJsonParse.header.sid);
             webSocket.close(1000, "");
         }
         List<Text> textList = myJsonParse.payload.choices.text;
@@ -227,10 +229,10 @@ public class SparkAI extends WebSocketListener {
         try {
             if (null != response) {
                 int code = response.code();
-                System.out.println("onFailure code:" + code);
-                System.out.println("onFailure body:" + response.body().string());
+                log.error("onFailure code:" + code);
+                log.error("onFailure body:" + response.body().string());
                 if (101 != code) {
-                    System.out.println("connection failed");
+                    log.error("connection failed");
                     System.exit(0);
                 }
             }
