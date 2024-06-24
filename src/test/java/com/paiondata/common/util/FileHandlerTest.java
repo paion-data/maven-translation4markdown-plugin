@@ -34,7 +34,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class IOHandlerTest {
+/**
+ * FileHandlerTest 类是一系列针对文件操作功能的单元测试集合，特别是针对Markdown文件的读写操作。
+ * 这些测试确保了`FileHandler`类中的方法能够正确处理文件读取、创建以及处理特殊情况，如空文件或不存在的目录。
+ */
+public class FileHandlerTest {
+
+    /**
+     * 使用JUnit的@TempDir注解来自动创建一个临时目录，在测试结束后自动清理。
+     */
+    @TempDir
+    Path tempDir;
+
+    /**
+     * 定义测试使用的Markdown文件内容。
+     */
+    private static final String TEST_CONTENT = "This is a test markdown file created by the unit test.";
+
+    /**
+     * 测试读取Markdown文件的功能。
+     * 验证读取的MarkdownFile对象非空且文件名正确。
+     *
+     * @throws IOException 输入输出异常。
+     */
     @Test
     public void readMarkdownFileTest() throws IOException {
         MarkdownFile markdownFile = FileHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
@@ -43,6 +65,9 @@ public class IOHandlerTest {
         assertEquals("example.md", markdownFile.getFileName(), "File name should match the expected value");
     }
 
+    /**
+     * 测试尝试读取一个空Markdown文件的情况，预期应抛出IOException。
+     */
     @Test
     public void readEmptyMarkdownFileTest() {
         String emptyFilePath = "src/test/resources/empty_markdown_file.md";
@@ -51,12 +76,12 @@ public class IOHandlerTest {
                 "An IOException should be thrown when reading an empty file");
     }
 
-    // 临时路径
-    @TempDir
-    Path tempDir;
-
-    private static final String TEST_CONTENT = "This is a test markdown file created by the unit test.";
-
+    /**
+     * 测试Markdown文件的创建功能。
+     * 验证文件创建后存在且内容与预期相符。
+     *
+     * @throws IOException 输入输出异常。
+     */
     @Test
     public void createMarkdownFileTest() throws IOException {
         String directory = tempDir.toString();
@@ -70,6 +95,10 @@ public class IOHandlerTest {
         assertEquals(TEST_CONTENT, actualContent, "The content of the created file should match the provided content");
     }
 
+    /**
+     * 测试在不存在的目录下创建Markdown文件的功能。
+     * 预期应当能成功创建文件而不抛出异常，并且文件应存在于预期路径。
+     */
     @Test
     public void createMarkdownFileWithNonExistentDirectoryTest() {
         String nonExistentDirectoryPath = "target/test_output/non_existent_dir/create_markdown_file_test.md";

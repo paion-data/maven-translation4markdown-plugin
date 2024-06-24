@@ -24,9 +24,22 @@ import com.paiondata.common.entity.SparkInfo;
 
 import java.util.List;
 
+/**
+ * CreateClient 类提供了使用不同大模型服务（阿里云、星火）进行Markdown文件翻译的功能。
+ * 该类封装了针对不同服务的翻译调用逻辑，支持批量处理文件翻译任务。
+ */
 public class CreateClient {
 
-    // 阿里云大模型
+    /**
+     * 单个文件翻译方法，专门用于阿里云大模型服务的翻译请求。
+     *
+     * @param info 阿里云服务的相关配置信息。
+     * @param outputPath 翻译后文件的输出目录路径。
+     * @param inputPath 待翻译的Markdown文件路径。
+     *
+     * @throws NoApiKeyException 如果缺少API密钥等必要参数。
+     * @throws InputRequiredException 如果输入参数有误或不完整。
+     */
     private static void aliTranslateSingle(AliyunInfo info, String outputPath, String inputPath)
             throws NoApiKeyException, InputRequiredException {
         if (info == null || info.getApiKey() == null) {
@@ -36,6 +49,16 @@ public class CreateClient {
                 info.getApiKey(), info.getMode().toString());
     }
 
+    /**
+     * 批量翻译文件，调用单个文件翻译方法处理列表中的每个文件。
+     * 默认输出目录为 {@link TranslationMojo#DEFAULT_OUTPUT_PATH}。
+     *
+     * @param info 阿里云服务的配置信息。
+     * @param files 待翻译Markdown文件的路径列表。
+     *
+     * @throws NoApiKeyException 如果缺少API密钥等必要参数。
+     * @throws InputRequiredException 如果输入参数有误或不完整。
+     */
     public static void aliTranslate(AliyunInfo info, List<String> files)
             throws NoApiKeyException, InputRequiredException {
         for (String file : files) {
@@ -43,7 +66,16 @@ public class CreateClient {
         }
     }
 
-    // 星火大模型
+    /**
+     * 单个文件翻译方法，专用于星火大模型服务的翻译请求。
+     *
+     * @param info 星火服务的相关配置信息。
+     * @param outputPath 翻译后文件的输出目录路径。
+     * @param inputPath 待翻译的Markdown文件路径。
+     *
+     * @throws NoApiKeyException 如果缺少appid、apiKey或apiSecret等必要参数。
+     * @throws InputRequiredException 如果输入参数有误或不完整。
+     */
     private static void sparkTranslateSingle(SparkInfo info, String outputPath, String inputPath)
             throws NoApiKeyException, InputRequiredException {
         if (info == null || info.getAppid() == null || info.getApiKey() == null || info.getApiSecret() == null) {
@@ -53,6 +85,16 @@ public class CreateClient {
                 info.getAppid(), info.getApiKey(), info.getApiSecret());
     }
 
+    /**
+     * 批量翻译文件，调用单个文件翻译方法处理列表中的每个文件。
+     * 默认输出目录为 {@link TranslationMojo#DEFAULT_OUTPUT_PATH}。
+     *
+     * @param info 星火服务的配置信息。
+     * @param files 待翻译Markdown文件的路径列表。
+     *
+     * @throws NoApiKeyException 如果缺少appid、apiKey或apiSecret等必要参数。
+     * @throws InputRequiredException 如果输入参数有误或不完整。
+     */
     public static void sparkTranslate(SparkInfo info, List<String> files)
             throws NoApiKeyException, InputRequiredException {
         for (String file : files) {

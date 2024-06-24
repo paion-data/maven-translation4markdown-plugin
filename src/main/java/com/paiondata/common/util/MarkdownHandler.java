@@ -29,9 +29,26 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * MarkdownHandler 类提供了Markdown文件的翻译处理功能。
+ * 该类利用外部翻译服务（如阿里云、Spark等）对Markdown文件内容进行翻译，
+ * 并将翻译后的内容保存为新的Markdown文件。
+ * <p>
+ * 使用了SLF4J进行日志记录，以便跟踪操作过程中的关键事件。
+ */
 @Slf4j
 public class MarkdownHandler {
 
+    /**
+     * 主要翻译处理方法，根据指定的服务调用相应的翻译API。
+     *
+     * @param service 翻译服务的名称，决定调用哪个翻译服务的API。
+     * @param params 参数数组，包括但不限于输入文件路径、输出目录路径、API密钥等。
+     *
+     * @throws TranslationException 如果发生翻译相关的错误。
+     * @throws NoApiKeyException 如果未提供API密钥。
+     * @throws InputRequiredException 如果缺少必要的输入参数。
+     */
     public static void translate(String service, String... params)
             throws TranslationException, NoApiKeyException, InputRequiredException {
         String trans;
@@ -50,6 +67,15 @@ public class MarkdownHandler {
         createOutputFile(params[1], file.getFileName(), trans);
     }
 
+    /**
+     * 读取指定路径的Markdown文件。
+     *
+     * @param inputPath Markdown文件的路径。
+     *
+     * @return MarkdownFile 包含文件名和内容的MarkdownFile对象。
+     *
+     * @throws TranslationException 如果读取文件时发生错误。
+     */
     private static MarkdownFile readFile(String inputPath) throws TranslationException {
         try {
             return FileHandler.readMarkdownFile(inputPath);
@@ -58,6 +84,15 @@ public class MarkdownHandler {
         }
     }
 
+    /**
+     * 根据提供的路径、文件名和翻译内容创建一个新的Markdown文件。
+     *
+     * @param outputPath 目标文件的输出目录路径。
+     * @param fileName 新文件的名称。
+     * @param trans 翻译后的内容。
+     *
+     * @throws TranslationException 如果翻译结果为空或文件创建失败。
+     */
     private static void createOutputFile(String outputPath, String fileName, String trans)
             throws TranslationException {
         if (trans == null) {
