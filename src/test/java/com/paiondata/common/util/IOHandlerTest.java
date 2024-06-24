@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024 Paion Data
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.paiondata.common.util;
 
 import static com.paiondata.TranslationMojo.DEFAULT_INPUT_PATH;
@@ -8,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.paiondata.common.entity.MarkdownFile;
-import com.paiondata.common.util.IOHandler;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -23,7 +37,7 @@ import java.nio.file.Paths;
 public class IOHandlerTest {
     @Test
     public void readMarkdownFileTest() throws IOException {
-        MarkdownFile markdownFile = IOHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
+        MarkdownFile markdownFile = FileHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
 
         assertNotNull(markdownFile, "MarkdownFile object should not be null");
         assertEquals("example.md", markdownFile.getFileName(), "File name should match the expected value");
@@ -33,7 +47,7 @@ public class IOHandlerTest {
     public void readEmptyMarkdownFileTest() {
         String emptyFilePath = "src/test/resources/empty_markdown_file.md";
 
-        assertThrows(IOException.class, () -> IOHandler.readMarkdownFile(emptyFilePath),
+        assertThrows(IOException.class, () -> FileHandler.readMarkdownFile(emptyFilePath),
                 "An IOException should be thrown when reading an empty file");
     }
 
@@ -48,7 +62,7 @@ public class IOHandlerTest {
         String directory = tempDir.toString();
         File file = new File(directory, "test01.md");
 
-        IOHandler.createMarkdownFile(file.getPath(), TEST_CONTENT);
+        FileHandler.createMarkdownFile(file.getPath(), TEST_CONTENT);
 
         assertTrue(Files.exists(Paths.get(file.getPath())), "The markdown file should exist after creation");
 
@@ -61,7 +75,7 @@ public class IOHandlerTest {
         String nonExistentDirectoryPath = "target/test_output/non_existent_dir/create_markdown_file_test.md";
         String testContent = "This is a test markdown file with a non-existent directory.";
 
-        assertDoesNotThrow(() -> IOHandler.createMarkdownFile(nonExistentDirectoryPath, testContent),
+        assertDoesNotThrow(() -> FileHandler.createMarkdownFile(nonExistentDirectoryPath, testContent),
                 "Creating a markdown file in a non-existent directory should succeed without throwing an exception");
 
         assertTrue(Files.exists(Paths.get(nonExistentDirectoryPath)),
