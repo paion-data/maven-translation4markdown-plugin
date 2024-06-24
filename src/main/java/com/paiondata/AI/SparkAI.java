@@ -44,6 +44,9 @@ import java.util.UUID;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * SparkAI 类提供了生成特定消息回复的功能。
+ */
 @Slf4j
 public class SparkAI extends WebSocketListener {
     // 地址与鉴权信息  https://spark-api.xf-yun.com/v1.1/chat   1.5地址  domain参数为general
@@ -64,12 +67,29 @@ public class SparkAI extends WebSocketListener {
     private static Boolean wsCloseFlag;
 
     private static Boolean totalFlag=true; // 控制提示用户是否输入
-    // 构造函数
+
+    /**
+     * 构造函数
+     * @param userId 用户ID
+     * @param wsCloseFlag 关闭状态
+     */
     public SparkAI(String userId, Boolean wsCloseFlag) {
         this.userId = userId;
         this.wsCloseFlag = wsCloseFlag;
     }
 
+    /**
+     * 获取AI针对特定内容的回答。
+     *
+     * @param appid      应用ID，用于识别调用者身份。
+     * @param apiKey     API密钥，用于接口访问授权。
+     * @param apiSecret  API密钥对应的密钥，确保请求的安全性。
+     * @param content    用户提出的问题或需要分析的文本内容。
+     *
+     * @return           AI生成的回答内容。若发生错误，则返回错误信息。
+     *
+     * @throws Exception 包含可能抛出的各种异常，如网络问题、解析异常等。
+     */
     public static String getAnswer(String appid, String apiKey, String apiSecret, String content) {
         try {
             totalAnswer = "";
@@ -117,6 +137,15 @@ public class SparkAI extends WebSocketListener {
         }
     }
 
+    /**
+     * 判断是否可以向历史记录中添加新的内容。
+     * <p>
+     * 考虑到历史记录的最大限制约为12,000字符，此方法检查当前历史记录的总长度。
+     * 如果超过限制，则从历史记录中移除最早添加的5条记录，并返回false表示无法添加更多内容。
+     * 否则，返回true表示可以安全添加新内容。
+     *
+     * @return 如果可以添加更多历史记录内容则返回true，否则返回false。
+     */
     public static boolean canAddHistory(){  // 由于历史记录最大上线1.2W左右，需要判断是能能加入历史
         int history_length=0;
         for(RoleContent temp:historyList){
@@ -134,14 +163,34 @@ public class SparkAI extends WebSocketListener {
         }
     }
 
-    // 线程来发送音频与参数
+    /**
+     * MyThread类继承自Thread，用于通过WebSocket发送AI对话请求并管理历史对话记录。
+     *
+     * @method run
+     *
+     * @param appid 应用ID，用于标识调用者的身份。
+     *
+     * @description 此方法构建一个包含历史对话与新问题的JSON请求体，并通过WebSocket发送给AI服务器。
+     *              它会遍历历史记录列表`historyList`，将每一条对话内容添加至请求中，然后加入最新的问题内容。
+     *              发送请求后，线程会等待直到收到回复或发生异常。完成后关闭WebSocket连接。
+     */
     class MyThread extends Thread {
         private WebSocket webSocket;
 
+        /**
+         * 构造器，初始化WebSocket对象。
+         *
+         * @param webSocket 用于通信的WebSocket实例。
+         */
         public MyThread(WebSocket webSocket) {
             this.webSocket = webSocket;
         }
 
+        /**
+         * 重写Thread的run方法以执行发送消息至AI服务器的任务。
+         *
+         * @param appid 应用程序ID。
+         */
         public void run(String appid) {
             try {
                 JSONObject requestJson=new JSONObject();
@@ -200,6 +249,15 @@ public class SparkAI extends WebSocketListener {
         }
     }
 
+    /**
+     * 重写WebSocketListener的onOpen方法，当WebSocket连接成功建立时被调用。
+     *
+     * @param webSocket 当前建立连接的WebSocket实例。
+     * @param response  与WebSocket连接建立相关的响应信息。
+     *
+     * @description 该方法创建一个新的MyThread线程实例，将刚建立连接的WebSocket对象传递给它，
+     *              并启动该线程以开始处理发送消息到AI服务器的逻辑。这通常涉及到初始化对话、发送历史消息等内容。
+     */
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
@@ -207,6 +265,17 @@ public class SparkAI extends WebSocketListener {
         myThread.start();
     }
 
+    /**
+     * 重写WebSocketListener的onMessage方法，处理接收到的WebSocket消息。
+     *
+     * @param webSocket 当前WebSocket连接实例。
+     * @param text      从服务器接收到的消息内容，格式为JSON字符串。
+     *
+     * @description 该方法首先将接收到的JSON字符串解析为`JsonParse`对象。如果解析出的`header.code`非零，
+     *              表示有错误发生，记录错误日志并关闭WebSocket连接。接着，遍历解析得到的回复内容列表，
+     *              将所有回复内容累加到`totalAnswer`中。当接收到的消息标示着回复完成（`header.status == 2`），
+     *              方法会根据`canAddHistory()`的结果决定是否添加新的对话记录到历史列表中，同时设置标志位准备关闭连接。
+     */
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         JsonParse myJsonParse = gson.fromJson(text, JsonParse.class);
@@ -238,6 +307,17 @@ public class SparkAI extends WebSocketListener {
         }
     }
 
+    /**
+     * 重写WebSocketListener的onFailure方法，处理WebSocket连接失败的情况。
+     *
+     * @param webSocket 当前WebSocket连接实例。
+     * @param t         抛出的异常对象，指示失败的具体原因。
+     * @param response  与失败尝试关联的HTTP响应（如果有）。
+     *
+     * @description 当WebSocket连接尝试失败或者在连接过程中遇到错误时，此方法会被调用。
+     *              它记录错误日志，包括HTTP响应状态码和响应体（如果可用）。如果响应码不是预期的WebSocket握手成功码（101），
+     *              则记录连接失败的信息，并退出应用程序。注意，此方法还会捕获并打印响应体读取时可能发生的IO异常。
+     */
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         super.onFailure(webSocket, t, response);
@@ -257,81 +337,80 @@ public class SparkAI extends WebSocketListener {
         }
     }
 
-
-    // 鉴权方法
-    public static String getAuthUrl(String hostUrl, String apiKey, String apiSecret) throws Exception {
-        URL url = new URL(hostUrl);
-        // 时间
-        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String date = format.format(new Date());
-        // 拼接
-        String preStr = "host: " + url.getHost() + "\n" +
-                "date: " + date + "\n" +
-                "GET " + url.getPath() + " HTTP/1.1";
-        // System.err.println(preStr);
-        // SHA256加密
-        Mac mac = Mac.getInstance("hmacsha256");
-        SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "hmacsha256");
-        mac.init(spec);
-
-        byte[] hexDigits = mac.doFinal(preStr.getBytes(StandardCharsets.UTF_8));
-        // Base64加密
-        String sha = Base64.getEncoder().encodeToString(hexDigits);
-        // System.err.println(sha);
-        // 拼接
-        String authorization = String.format("api_key=\"%s\", algorithm=\"%s\", headers=\"%s\", signature=\"%s\"", apiKey, "hmac-sha256", "host date request-line", sha);
-        // 拼接地址
-        HttpUrl httpUrl = Objects.requireNonNull(HttpUrl.parse("https://" + url.getHost() + url.getPath())).newBuilder().//
-                addQueryParameter("authorization", Base64.getEncoder().encodeToString(authorization.getBytes(StandardCharsets.UTF_8))).//
-                addQueryParameter("date", date).//
-                addQueryParameter("host", url.getHost()).//
-                build();
-
-        // System.err.println(httpUrl.toString());
-        return httpUrl.toString();
-    }
-
-    //返回的json结果拆解
+    /**
+     * 返回的json结果拆解
+     */
     class JsonParse {
         Header header;
         Payload payload;
     }
 
+    /**
+     * json解析实体类
+     */
     class Header {
         int code;
         int status;
         String sid;
     }
 
+    /**
+     * json解析实体类
+     */
     class Payload {
         Choices choices;
     }
 
+    /**
+     * json解析实体类
+     */
     class Choices {
         List<Text> text;
     }
 
+    /**
+     * json解析实体类
+     */
     class Text {
         String role;
         String content;
     }
+
+    /**
+     * 角色实体类
+     */
     class RoleContent{
         String role;
         String content;
 
+        /**
+         * 获取角色
+         * @return 角色
+         */
         public String getRole() {
             return role;
         }
 
+        /**
+         * 设置角色
+         * @param role 角色
+         */
         public void setRole(String role) {
             this.role = role;
         }
 
+        /**
+         * 获取内容
+         * @return 内容
+         */
         public String getContent() {
             return content;
         }
 
+        /**
+         * 设置内容
+         * @param content 内容
+         */
         public void setContent(String content) {
             this.content = content;
         }
