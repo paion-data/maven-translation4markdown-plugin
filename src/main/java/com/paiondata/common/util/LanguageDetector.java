@@ -15,8 +15,22 @@
  */
 package com.paiondata.common.util;
 
+/**
+ * 语言检测器工具类，用于识别给定文本是中文还是英文。
+ */
 public class LanguageDetector {
 
+    /**
+     * 检测输入文本的语言类型。
+     * <p>
+     * 通过统计文本中中文字符（Unicode范围为4E00至9FFF）的数量与非中文字符数量的比值来判断。
+     * 如果中文字符的比例远高于非中文字符，则认为是中文文本；否则，简单判断为英文文本。
+     * 注意：这种方法适用于简化的语言识别场景，对于混合语言或非中英文文本可能无法准确判断。
+     *
+     * @param text 需要检测的语言文本。
+     *
+     * @return String 识别结果，可能是"中文"或"英语"。
+     */
     public static String detectLanguage(String text) {
         // 定义中文字符的 Unicode 范围
         int chineseMin = 0x4E00;

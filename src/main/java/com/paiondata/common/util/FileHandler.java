@@ -26,9 +26,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * 文件处理器类，提供Markdown文件的读取和创建操作。
+ */
 public class FileHandler {
 
-    // 读取文件
+    /**
+     * 从指定路径读取Markdown文件内容。
+     *
+     * @param filePath Markdown文件的路径。
+     *
+     * @return MarkdownFile 包含文件名和文件内容的MarkdownFile对象。
+     *
+     * @throws IOException 如果文件不存在、不是常规文件、内容为空或读取时发生其他I/O错误。
+     */
     public static MarkdownFile readMarkdownFile(String filePath) throws IOException {
         Path path = Paths.get(filePath);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
@@ -44,6 +55,16 @@ public class FileHandler {
         return new MarkdownFile(path.getFileName().toString(), content);
     }
 
+    /**
+     * 在指定路径创建一个新的Markdown文件并写入内容。
+     * <p>
+     * 如果文件的父目录不存在，将自动创建。
+     *
+     * @param filePath 要创建的Markdown文件的完整路径。
+     * @param content 要写入文件的内容。
+     *
+     * @throws IOException 如果创建文件、写入内容时发生I/O错误。
+     */
     public static void createMarkdownFile(String filePath, String content) throws IOException {
         Path file = Paths.get(filePath);
 

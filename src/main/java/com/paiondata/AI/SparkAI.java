@@ -338,6 +338,55 @@ public class SparkAI extends WebSocketListener {
     }
 
     /**
+     * 生成带有鉴权信息的WebSocket服务URL。
+     *
+     * @param hostUrl   WebSocket服务的基础URL地址。
+     * @param apiKey    API密钥，用于身份验证。
+     * @param apiSecret API密钥对应的密钥，用于签名计算。
+     *
+     * @return          经过鉴权处理后的完整WebSocket URL。
+     *
+     * @throws Exception 如果在处理URL、日期格式化或加密过程中发生异常。
+     *
+     * @description 该方法首先解析基础URL，然后构建一个包含当前日期的预处理字符串，
+     *              使用HMAC-SHA256算法和API密钥对应的密钥对此字符串进行签名。之后，将API密钥、算法信息、
+     *              以及签名等组合成Authorization头部信息，并将其以及其他必要参数作为查询参数追加到URL上。
+     *              最终返回这个包含全部鉴权信息的WebSocket连接URL。
+     */
+    public static String getAuthUrl(String hostUrl, String apiKey, String apiSecret) throws Exception {
+        URL url = new URL(hostUrl);
+        // 时间
+        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date = format.format(new Date());
+        // 拼接
+        String preStr = "host: " + url.getHost() + "\n" +
+                "date: " + date + "\n" +
+                "GET " + url.getPath() + " HTTP/1.1";
+        // System.err.println(preStr);
+        // SHA256加密
+        Mac mac = Mac.getInstance("hmacsha256");
+        SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "hmacsha256");
+        mac.init(spec);
+
+        byte[] hexDigits = mac.doFinal(preStr.getBytes(StandardCharsets.UTF_8));
+        // Base64加密
+        String sha = Base64.getEncoder().encodeToString(hexDigits);
+        // System.err.println(sha);
+        // 拼接
+        String authorization = String.format("api_key=\"%s\", algorithm=\"%s\", headers=\"%s\", signature=\"%s\"", apiKey, "hmac-sha256", "host date request-line", sha);
+        // 拼接地址
+        HttpUrl httpUrl = Objects.requireNonNull(HttpUrl.parse("https://" + url.getHost() + url.getPath())).newBuilder().//
+                addQueryParameter("authorization", Base64.getEncoder().encodeToString(authorization.getBytes(StandardCharsets.UTF_8))).//
+                addQueryParameter("date", date).//
+                addQueryParameter("host", url.getHost()).//
+                build();
+
+        // System.err.println(httpUrl.toString());
+        return httpUrl.toString();
+    }
+
+    /**
      * 返回的json结果拆解
      */
     class JsonParse {

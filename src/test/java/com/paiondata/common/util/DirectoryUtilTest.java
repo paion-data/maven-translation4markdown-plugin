@@ -40,10 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DirectoryUtilTest 类是一组单元测试，用于验证 {@link DirectoryUtil} 类中各个方法的正确性，
+ * 包括文件哈希生成、当前目录文件列表获取、文件删除、以及文件同步逻辑等功能。
+ * 测试覆盖了新增、更新、删除文件的场景，确保目录操作的准确性。
+ */
 @Slf4j
-public class DirectoryCheckUtilTest {
+public class DirectoryUtilTest {
 
-    // 临时路径
+    // 定义多个临时测试路径
     private static final String TEMP_PATH01 = "src" + File.separator + "test" + File.separator + "java" + File.separator
             + "com" + File.separator + "paiondata" + File.separator + "testPath01";
     private static final String TEMP_PATH02 = "src" + File.separator + "test" + File.separator + "java" + File.separator
@@ -53,18 +58,27 @@ public class DirectoryCheckUtilTest {
     private static final String TEMP_PATH04 = "src" + File.separator + "test" + File.separator + "java" + File.separator
             + "com" + File.separator + "paiondata" + File.separator + "testPath04";
 
-    // 测试生成Hash码
+    /**
+     * 测试文件哈希生成方法。
+     * 验证生成的哈希映射不为空。
+     *
+     * @throws IOException 输入输出异常。
+     * @throws NoSuchAlgorithmException 无此类算法异常。
+     */
     @Test
     public void generateFileHashTest() throws IOException, NoSuchAlgorithmException {
-        List<String> currentFileList = DirectoryCheckUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
-        Map<String, String> generatedHashes = DirectoryCheckUtil.generateFileHash(currentFileList);
+        List<String> currentFileList = DirectoryUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
+        Map<String, String> generatedHashes = DirectoryUtil.generateFileHash(currentFileList);
         assertNotNull(generatedHashes, "Generated hashes should not be null");
     }
 
-    // 测试获取当前目录的方法
+    /**
+     * 测试获取当前目录文件列表方法。
+     * 验证返回列表非空且包含预期文件。
+     */
     @Test
     public void testGetCurrentFileList() {
-        List<String> currentFileList = DirectoryCheckUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
+        List<String> currentFileList = DirectoryUtil.getCurrentFileList(TranslationMojo.DEFAULT_INPUT_PATH);
 
         // 验证返回的文件列表非空
         assertNotNull(currentFileList);
@@ -74,7 +88,12 @@ public class DirectoryCheckUtilTest {
         assertTrue(currentFileList.contains("docs" + File.separator + "example.md"), "Expected file missing");
     }
 
-    // 测试删除方法
+    /**
+     * 测试文件删除方法。
+     * 根据给定文件列表删除指定目录下的文件，并验证删除结果。
+     *
+     * @throws IOException 输入输出异常。
+     */
     @Test
     public void testDeletedFiles() throws IOException {
         String directory = TEMP_PATH01;
@@ -86,7 +105,7 @@ public class DirectoryCheckUtilTest {
         fileList.add("docs" + File.separator + "test01.md");
         fileList.add("docs" + File.separator + "test02.md");
 
-        DirectoryCheckUtil.deleteFile(fileList, directory);
+        DirectoryUtil.deleteFile(fileList, directory);
         assertFalse(new File(directory, "test01.md").exists());
         assertFalse(new File(directory, "test02.md").exists());
         // test03.md没被删除
@@ -95,8 +114,12 @@ public class DirectoryCheckUtilTest {
         deleteFilesInDirectory(directory);
     }
 
-
-    // 测试 syncFileWithMap 方法-模拟添加键值对
+    /**
+     * 测试文件同步逻辑，专注于新增文件场景。
+     * 验证同步后新增文件被正确创建且内容匹配。
+     *
+     * @throws Exception 异常捕捉。
+     */
     @Test
     public void testSyncFileWithMap_AddedKeys() throws Exception {
         String directory = TEMP_PATH02;
@@ -104,7 +127,7 @@ public class DirectoryCheckUtilTest {
         inputMap.put("key1", "value1");
         inputMap.put("key2", "value2");
 
-        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryUtil.syncFileWithMap(directory, inputMap);
 
         // 验证返回的 FileResult 不为 null
         assertNotNull(result);
@@ -127,7 +150,12 @@ public class DirectoryCheckUtilTest {
         deleteFilesInDirectory(directory);
     }
 
-    // 测试 syncFileWithMap 方法-模拟更新键值对
+    /**
+     * 测试文件同步逻辑，专注于更新文件内容场景。
+     * 验证同步后文件内容被正确更新，同时记录更新和删除的文件。
+     *
+     * @throws Exception 异常捕捉。
+     */
     @Test
     public void testSyncFileWithMap_UpdatedKeys() throws Exception {
         String directory = TEMP_PATH03;
@@ -144,7 +172,7 @@ public class DirectoryCheckUtilTest {
         inputMap.put("key1", "updatedValue1"); // 更新现有的key
         inputMap.put("key3", "value3"); // 添加一个key
 
-        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryUtil.syncFileWithMap(directory, inputMap);
 
         assertNotNull(result);
         assertTrue(result.getAddedKeys().contains("key3"));
@@ -161,7 +189,12 @@ public class DirectoryCheckUtilTest {
         deleteFilesInDirectory(directory);
     }
 
-    // 测试 syncFileWithMap 方法-模拟删除键值对
+    /**
+     * 测试文件同步逻辑，专注于删除文件场景。
+     * 验证指定的文件从目录中被正确移除。
+     *
+     * @throws Exception 异常捕捉。
+     */
     @Test
     public void testSyncFileWithMap_DeletedKeys() throws Exception {
         String directory = TEMP_PATH04;
@@ -176,7 +209,7 @@ public class DirectoryCheckUtilTest {
         Map<String, String> inputMap = new HashMap<>();
         inputMap.put("key1", "value1"); // 保持key1
 
-        FileResult result = DirectoryCheckUtil.syncFileWithMap(directory, inputMap);
+        FileResult result = DirectoryUtil.syncFileWithMap(directory, inputMap);
 
         assertNotNull(result);
         assertTrue(result.getUpdatedKeys().isEmpty());
@@ -191,7 +224,11 @@ public class DirectoryCheckUtilTest {
         deleteFilesInDirectory(directory);
     }
 
-    // 删除指定目录下所有文件
+    /**
+     * 辅助方法，用于删除指定目录下的所有文件。
+     *
+     * @param directoryPath 目录路径。
+     */
     private static void deleteFilesInDirectory(String directoryPath) {
         File directory = new File(directoryPath);
 
@@ -203,7 +240,6 @@ public class DirectoryCheckUtilTest {
                     // 删除文件
                     if (!file.isDirectory()) {
                         file.delete();
-
                         log.warn("删除文件：" + file.getAbsolutePath());
                     }
                 }
@@ -212,5 +248,4 @@ public class DirectoryCheckUtilTest {
             log.error("目录不存在或不是一个目录：" + directoryPath);
         }
     }
-
 }

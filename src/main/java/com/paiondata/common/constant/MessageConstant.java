@@ -16,13 +16,23 @@
 package com.paiondata.common.constant;
 
 /**
- * The message constant class.
+ * MessageConstant类提供了一组常量，用于定义在处理文件和目录操作时可能遇到的错误信息。
+ * 这些常量有助于在应用中保持错误信息的一致性和可维护性。
  */
 public class MessageConstant {
 
+    /**
+     * 错误信息常量，表示提供的路径不是一个有效的目录或该目录不存在。
+     */
     public static final String DIRECTORY_ERROR = "不为目录或目录不存在：";
 
+    /**
+     * 错误信息常量，表示指定的文件不存在。
+     */
     public static final String FILE_NOT_EXIST = "文件不存在：";
 
+    /**
+     * 错误信息常量，表示文件删除操作失败。
+     */
     public static final String FILE_DELETE_ERROR = "无法删除文件：";
 }
