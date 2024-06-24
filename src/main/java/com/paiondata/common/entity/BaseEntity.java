@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.paiondata.common.exception;
+package com.paiondata.common.entity;
 
-public class FileDeleteException extends BaseException{
-    public FileDeleteException(String msg) {
-        super(msg);
-    }
+import java.io.Serializable;
+
+/**
+ * The base class for all entities.
+ */
+public class BaseEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 }
