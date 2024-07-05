@@ -35,74 +35,74 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * FileHandlerTest 类是一系列针对文件操作功能的单元测试集合，特别是针对Markdown文件的读写操作。
- * 这些测试确保了`FileHandler`类中的方法能够正确处理文件读取、创建以及处理特殊情况，如空文件或不存在的目录。
+ * FileHandlerTest 类是一系列针对文件操作功能的单元测试集合，特别是针对Markdown文件的读写操作.
+ * 这些测试确保了`FileHandler`类中的方法能够正确处理文件读取、创建以及处理特殊情况，如空文件或不存在的目录.
  */
 public class FileHandlerTest {
 
     /**
-     * 使用JUnit的@TempDir注解来自动创建一个临时目录，在测试结束后自动清理。
+     * 定义测试使用的Markdown文件内容.
+     */
+    private static final String TEST_CONTENT = "This is a test markdown file created by the unit test.";
+
+    /**
+     * 使用JUnit的@TempDir注解来自动创建一个临时目录，在测试结束后自动清理.
      */
     @TempDir
     Path tempDir;
 
     /**
-     * 定义测试使用的Markdown文件内容。
-     */
-    private static final String TEST_CONTENT = "This is a test markdown file created by the unit test.";
-
-    /**
-     * 测试读取Markdown文件的功能。
-     * 验证读取的MarkdownFile对象非空且文件名正确。
+     * 测试读取Markdown文件的功能.
+     * 验证读取的MarkdownFile对象非空且文件名正确.
      *
      * @throws IOException 输入输出异常。
      */
     @Test
     public void readMarkdownFileTest() throws IOException {
-        MarkdownFile markdownFile = FileHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
+        final MarkdownFile markdownFile = FileHandler.readMarkdownFile(DEFAULT_INPUT_PATH + "/example.md");
 
         assertNotNull(markdownFile, "MarkdownFile object should not be null");
         assertEquals("example.md", markdownFile.getFileName(), "File name should match the expected value");
     }
 
     /**
-     * 测试尝试读取一个空Markdown文件的情况，预期应抛出IOException。
+     * 测试尝试读取一个空Markdown文件的情况，预期应抛出IOException.
      */
     @Test
     public void readEmptyMarkdownFileTest() {
-        String emptyFilePath = "src/test/resources/empty_markdown_file.md";
+        final String emptyFilePath = "src/test/resources/empty_markdown_file.md";
 
         assertThrows(IOException.class, () -> FileHandler.readMarkdownFile(emptyFilePath),
                 "An IOException should be thrown when reading an empty file");
     }
 
     /**
-     * 测试Markdown文件的创建功能。
-     * 验证文件创建后存在且内容与预期相符。
+     * 测试Markdown文件的创建功能.
+     * 验证文件创建后存在且内容与预期相符.
      *
      * @throws IOException 输入输出异常。
      */
     @Test
     public void createMarkdownFileTest() throws IOException {
-        String directory = tempDir.toString();
-        File file = new File(directory, "test01.md");
+        final String directory = tempDir.toString();
+        final File file = new File(directory, "test01.md");
 
         FileHandler.createMarkdownFile(file.getPath(), TEST_CONTENT);
 
         assertTrue(Files.exists(Paths.get(file.getPath())), "The markdown file should exist after creation");
 
-        String actualContent = Files.readString(Paths.get(file.getPath()), StandardCharsets.UTF_8);
+        final String actualContent = Files.readString(Paths.get(file.getPath()), StandardCharsets.UTF_8);
         assertEquals(TEST_CONTENT, actualContent, "The content of the created file should match the provided content");
     }
 
     /**
-     * 测试在不存在的目录下创建Markdown文件的功能。
-     * 预期应当能成功创建文件而不抛出异常，并且文件应存在于预期路径。
+     * 测试在不存在的目录下创建Markdown文件的功能.
+     * 预期应当能成功创建文件而不抛出异常，并且文件应存在于预期路径.
      */
     @Test
     public void createMarkdownFileWithNonExistentDirectoryTest() {
-        String nonExistentDirectoryPath = "target/test_output/non_existent_dir/create_markdown_file_test.md";
-        String testContent = "This is a test markdown file with a non-existent directory.";
+        final String nonExistentDirectoryPath = "target/test_output/non_existent_dir/create_markdown_file_test.md";
+        final String testContent = "This is a test markdown file with a non-existent directory.";
 
         assertDoesNotThrow(() -> FileHandler.createMarkdownFile(nonExistentDirectoryPath, testContent),
                 "Creating a markdown file in a non-existent directory should succeed without throwing an exception");

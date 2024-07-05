@@ -16,7 +16,7 @@
 package com.paiondata.common.exception;
 
 /**
- * TranslationException 类继承自BaseException，用于表示翻译过程中遇到的异常情况。
+ * TranslationException 类继承自BaseException，用于表示翻译过程中遇到的异常情况.
  *
  * @constructor TranslationException 初始化构造函数，接受一个字符串参数msg，描述翻译操作中发生的错误信息，例如服务不可用、请求超时或翻译错误等。
  *
@@ -25,10 +25,10 @@ package com.paiondata.common.exception;
  */
 public class TranslationException extends BaseException {
     /**
-     * 构造函数
+     * 构造函数.
      * @param msg 错误信息
      */
-    public TranslationException(String msg) {
+    public TranslationException(final String msg) {
         super(msg);
     }
 }

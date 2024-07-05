@@ -45,7 +45,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * SparkAI 类提供了生成特定消息回复的功能。
+ * SparkAI 类提供了生成特定消息回复的功能.
  */
 @Slf4j
 public class SparkAI extends WebSocketListener {
