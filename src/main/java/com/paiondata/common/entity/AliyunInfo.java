@@ -18,7 +18,7 @@ package com.paiondata.common.entity;
 import lombok.Builder;
 
 /**
- * AliyunInfo类封装了与阿里云服务交互所需的基本信息，继承自BaseEntity，使用Lombok的@Builder注解增强构建对象的能力。
+ * AliyunInfo类封装了与阿里云服务交互所需的基本信息，继承自BaseEntity，使用Lombok的@Builder注解增强构建对象的能力1。
  *
  * @field service 静态常量，表示服务提供商名称，默认为"Aliyun"。
  * @field apiKey  阿里云API密钥，用于认证和授权。
