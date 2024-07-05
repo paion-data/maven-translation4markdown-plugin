@@ -46,11 +46,11 @@ import java.util.Map;
 public class TranslationMojo extends AbstractMojo {
 
     /** 默认输入路径常量 */
-    public static final String DEFAULT_INPUT_PATH = "docs";
+    public static final String DEFAULT_INPUT_PATH = "docs" + File.separator + "docs";
 
     /** 默认输出路径常量 */
-    public static final String DEFAULT_OUTPUT_PATH = "i18n" + File.separator + "zh-cn" + File.separator +
-            "docusaurus-plugin-content-docs" + File.separator + "current";
+    public static final String DEFAULT_OUTPUT_PATH = "docs" + File.separator + "i18n" + File.separator + "zh-cn"
+            + File.separator + "docusaurus-plugin-content-docs" + File.separator + "current";
 
     /** Maven项目对象，自动注入 */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)

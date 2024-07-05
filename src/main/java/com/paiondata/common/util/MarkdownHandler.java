@@ -54,7 +54,8 @@ public class MarkdownHandler {
         String trans;
         MarkdownFile file = readFile(params[0]);
         String detectLanguage = LanguageDetector.detectLanguage(file.getContent());
-        String inputContent = file.getContent() + "\n\n请帮我翻译成" + detectLanguage;
+        String inputContent = "请将Markdown文本翻译成" + detectLanguage +
+                "，请注意不要翻译Markdown文本中出现的一些格式关键字信息和超链接:\n" + file.getContent();
 
         switch (service) {
             case AliyunInfo.service -> trans =
