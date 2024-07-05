@@ -15,6 +15,8 @@
  */
 package com.paiondata;
 
+import com.alibaba.dashscope.exception.InputRequiredException;
+import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.paiondata.common.entity.FileResult;
 import com.paiondata.common.entity.SparkInfo;
 import com.paiondata.common.util.DirectoryUtil;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TranslationMojo 是一个Maven插件的目标（Mojo），负责在构建生命周期的INSTALL阶段自动执行Markdown文件的翻译任务。
+ * TranslationMojo 是一个Maven插件的目标（Mojo），负责在构建生命周期的INSTALL阶段自动执行Markdown文件的翻译任务.
  * 它基于指定的输入和输出路径管理文件的同步，并调用外部服务对新增或更新的文件进行翻译。
  * <p>
  * 特性包括：
@@ -45,18 +47,22 @@ import java.util.Map;
 @Mojo(name = "translate", defaultPhase = LifecyclePhase.INSTALL)
 public class TranslationMojo extends AbstractMojo {
 
-    /** 默认输入路径常量 */
-    public static final String DEFAULT_INPUT_PATH = "docs" + File.separator + "docs";
+    private static final String DOCS = "docs";
 
-    /** 默认输出路径常量 */
-    public static final String DEFAULT_OUTPUT_PATH = "docs" + File.separator + "i18n" + File.separator + "zh-cn"
+    /**
+     * 默认的输入路径，用于读取Markdown文件.
+     */
+    public static final String DEFAULT_INPUT_PATH = DOCS + File.separator + DOCS;
+
+    /**
+     * 默认的输出路径，用于保存翻译后的Markdown文件.
+     */
+    public static final String DEFAULT_OUTPUT_PATH = DOCS + File.separator + "i18n" + File.separator + "zh-cn"
             + File.separator + "docusaurus-plugin-content-docs" + File.separator + "current";
 
-    /** Maven项目对象，自动注入 */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    /** Spark服务配置参数 */
     @Parameter(property = "appid")
     private String appid;
     @Parameter(property = "apiSecret")
@@ -65,23 +71,23 @@ public class TranslationMojo extends AbstractMojo {
     private String apiKey;
 
     /**
-     * 执行Mojo的主要入口方法。
+     * 执行Mojo的主要入口方法.
      *
      * @throws MojoExecutionException 如果在执行过程中遇到错误。
      */
     public void execute() throws MojoExecutionException {
         // 获取当前输入路径文件列表
-        List<String> currentFileList = DirectoryUtil.getCurrentFileList(DEFAULT_INPUT_PATH);
+        final List<String> currentFileList = DirectoryUtil.getCurrentFileList(DEFAULT_INPUT_PATH);
 
         // 生成输入路径文件哈希
-        Map<String, String> fileHash;
+        final Map<String, String> fileHash;
         try {
             fileHash = DirectoryUtil.generateFileHash(currentFileList);
         } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         // 获取输出路径文件列表
-        FileResult fileResult = DirectoryUtil.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
+        final FileResult fileResult = DirectoryUtil.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
 
         // 删除输出目录
         DirectoryUtil.deleteFile(fileResult.getDeletedKeys(), DEFAULT_OUTPUT_PATH);
@@ -96,13 +102,13 @@ public class TranslationMojo extends AbstractMojo {
     }
 
     /**
-     * 私有方法，负责具体翻译逻辑的执行。
+     * 私有方法，负责具体翻译逻辑的执行.
      *
      * @param files 需要翻译的文件路径列表。
      *
      * @throws MojoExecutionException 如果缺少必要的API配置参数或翻译过程中发生异常。
      */
-    private void translateFiles(List<String> files) throws MojoExecutionException {
+    private void translateFiles(final List<String> files) throws MojoExecutionException {
         // 读取 api 参数
         if (appid == null || appid.isEmpty()) {
             throw new MojoExecutionException("appid 参数未设置");
@@ -115,7 +121,7 @@ public class TranslationMojo extends AbstractMojo {
         }
 
         // 创建 SparkInfo 对象
-        SparkInfo info = SparkInfo.builder()
+        final SparkInfo info = SparkInfo.builder()
                 .appid(appid)
                 .apiSecret(apiSecret)
                 .apiKey(apiKey)
@@ -124,7 +130,7 @@ public class TranslationMojo extends AbstractMojo {
         try {
             // 调用 CreateClient.sparkTranslate 方法进行翻译
             CreateClient.sparkTranslate(info, files);
-        } catch (Exception e) {
+        } catch (final NoApiKeyException | InputRequiredException e) {
             throw new MojoExecutionException("执行翻译时出现异常", e);
         }
     }

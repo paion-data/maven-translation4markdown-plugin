@@ -18,7 +18,7 @@ package com.paiondata.common.entity;
 import lombok.Builder;
 
 /**
- * SparkInfo类封装了与Spark服务交互所需的认证和配置信息，继承自BaseEntity。
+ * SparkInfo类封装了与Spark服务交互所需的认证和配置信息，继承自BaseEntity.
  *
  * @field service 静态常量，表示服务提供商名称，默认为"Spark"。
  * @field appid Spark服务的应用ID，用于唯一标识应用程序。
@@ -38,7 +38,10 @@ import lombok.Builder;
 @Builder
 public class SparkInfo extends BaseEntity {
 
-    public static final String service = "Spark";
+    /**
+     * 服务提供名称.
+     */
+    public static final String SERVICE = "Spark";
 
     private String appid;
 
@@ -47,25 +50,25 @@ public class SparkInfo extends BaseEntity {
     private String apiKey;
 
     /**
-     * 默认构造函数
+     * 默认构造函数.
      */
     public SparkInfo() {
     }
 
     /**
-     * 构造函数
+     * 构造函数.
      * @param appid Spark服务的应用ID
      * @param apiSecret Spark服务的API密钥
      * @param apiKey Spark服务的API密钥
      */
-    public SparkInfo(String appid, String apiSecret, String apiKey) {
+    public SparkInfo(final String appid, final String apiSecret, final String apiKey) {
         this.appid = appid;
         this.apiSecret = apiSecret;
         this.apiKey = apiKey;
     }
 
     /**
-     * 获取Spark服务的应用ID
+     * 获取Spark服务的应用ID.
      * @return 应用ID
      */
     public String getAppid() {
@@ -73,15 +76,15 @@ public class SparkInfo extends BaseEntity {
     }
 
     /**
-     * 设置Spark服务的应用ID
+     * 设置Spark服务的应用ID.
      * @param appid 应用ID
      */
-    public void setAppid(String appid) {
+    public void setAppid(final String appid) {
         this.appid = appid;
     }
 
     /**
-     * 获取Spark服务的API密钥
+     * 获取Spark服务的API密钥.
      * @return API密钥
      */
     public String getApiSecret() {
@@ -89,15 +92,15 @@ public class SparkInfo extends BaseEntity {
     }
 
     /**
-     * 设置Spark服务的API密钥
+     * 设置Spark服务的API密钥.
      * @param apiSecret API密钥
      */
-    public void setApiSecret(String apiSecret) {
+    public void setApiSecret(final String apiSecret) {
         this.apiSecret = apiSecret;
     }
 
     /**
-     * 获取Spark服务的另一个API密钥（或相同的密钥依据服务设定）
+     * 获取Spark服务的另一个API密钥（或相同的密钥依据服务设定）.
      * @return API密钥
      */
     public String getApiKey() {
@@ -105,10 +108,10 @@ public class SparkInfo extends BaseEntity {
     }
 
     /**
-     * 设置Spark服务的另一个API密钥（或相同的密钥依据服务设定）
+     * 设置Spark服务的另一个API密钥（或相同的密钥依据服务设定）.
      * @param apiKey API密钥
      */
-    public void setApiKey(String apiKey) {
+    public void setApiKey(final String apiKey) {
         this.apiKey = apiKey;
     }
 }

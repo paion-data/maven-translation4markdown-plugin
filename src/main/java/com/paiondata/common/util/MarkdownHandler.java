@@ -58,9 +58,9 @@ public class MarkdownHandler {
                 "，请注意不要翻译Markdown文本中出现的一些格式关键字信息和超链接:\n" + file.getContent();
 
         switch (service) {
-            case AliyunInfo.service -> trans =
+            case AliyunInfo.SERVICE -> trans =
                     AliDashScopeAI.callWithMessage(params[2], Boolean.parseBoolean(params[3]), inputContent);
-            case SparkInfo.service -> trans =
+            case SparkInfo.SERVICE -> trans =
                     SparkAI.getAnswer(params[2], params[3], params[4], inputContent);
             default -> throw new TranslationException("不支持的翻译服务：" + service);
         }

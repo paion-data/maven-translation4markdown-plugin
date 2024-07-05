@@ -27,12 +27,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
- * 文件处理器类，提供Markdown文件的读取和创建操作。
+ * 文件处理器类，提供Markdown文件的读取和创建操作.
  */
 public class FileHandler {
 
     /**
-     * 从指定路径读取Markdown文件内容。
+     * 从指定路径读取Markdown文件内容.
      *
      * @param filePath Markdown文件的路径。
      *
@@ -40,13 +40,13 @@ public class FileHandler {
      *
      * @throws IOException 如果文件不存在、不是常规文件、内容为空或读取时发生其他I/O错误。
      */
-    public static MarkdownFile readMarkdownFile(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
+    public static MarkdownFile readMarkdownFile(final String filePath) throws IOException {
+        final Path path = Paths.get(filePath);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
             throw new FileNotFoundException("指定的文件不存在或不是一个常规文件：" + filePath);
         }
 
-        String content = Files.readString(path, StandardCharsets.UTF_8).trim(); // 使用Java 11的Files.readString简化读取
+        final String content = Files.readString(path, StandardCharsets.UTF_8).trim(); // 使用Java 11的Files.readString简化读取
 
         if (content.isEmpty()) {
             throw new IOException("输入文件内容为空");
@@ -56,7 +56,7 @@ public class FileHandler {
     }
 
     /**
-     * 在指定路径创建一个新的Markdown文件并写入内容。
+     * 在指定路径创建一个新的Markdown文件并写入内容.
      * <p>
      * 如果文件的父目录不存在，将自动创建。
      *
@@ -65,8 +65,8 @@ public class FileHandler {
      *
      * @throws IOException 如果创建文件、写入内容时发生I/O错误。
      */
-    public static void createMarkdownFile(String filePath, String content) throws IOException {
-        Path file = Paths.get(filePath);
+    public static void createMarkdownFile(final String filePath, final String content) throws IOException {
+        final Path file = Paths.get(filePath);
 
         // 自动创建缺失的目录结构
         Files.createDirectories(file.getParent());
