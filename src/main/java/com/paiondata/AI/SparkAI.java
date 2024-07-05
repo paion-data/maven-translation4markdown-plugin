@@ -51,7 +51,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class SparkAI extends WebSocketListener {
     // 地址与鉴权信息  https://spark-api.xf-yun.com/v1.1/chat   1.5地址  domain参数为general
     // 地址与鉴权信息  https://spark-api.xf-yun.com/v2.1/chat   2.0地址  domain参数为generalv2
-    public static final String hostUrl = "https://spark-api.xf-yun.com/v3.5/chat";
+    public static final String hostUrl = "https://spark-api.xf-yun.com/v4.0/chat";
 
     public static List<RoleContent> historyList=new ArrayList<>(); // 对话历史存储集合
 
@@ -107,7 +107,7 @@ public class SparkAI extends WebSocketListener {
             header.put("uid", UUID.randomUUID().toString().substring(0, 10));
             JSONObject parameter = new JSONObject();
             JSONObject chat = new JSONObject();
-            chat.put("domain", "generalv3.5");
+            chat.put("domain", "4.0Ultra");
             chat.put("temperature", 0.5);
             chat.put("max_tokens", 8192);
             parameter.put("chat", chat);
@@ -167,8 +167,6 @@ public class SparkAI extends WebSocketListener {
      * MyThread类继承自Thread，用于通过WebSocket发送AI对话请求并管理历史对话记录。
      *
      * @method run
-     *
-     * @param appid 应用ID，用于标识调用者的身份。
      *
      * @description 此方法构建一个包含历史对话与新问题的JSON请求体，并通过WebSocket发送给AI服务器。
      *              它会遍历历史记录列表`historyList`，将每一条对话内容添加至请求中，然后加入最新的问题内容。
