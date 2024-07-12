@@ -31,6 +31,7 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,25 +85,23 @@ public class TranslationMojo extends AbstractMojo {
         try {
             fileHash = DirectoryUtil.generateFileHash(currentFileList);
         } catch (IOException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new MojoExecutionException("生成文件哈希时出现异常", e);
         }
         // 获取输出路径文件列表
         final FileResult fileResult = DirectoryUtil.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
 
-        // 删除输出目录
-        if (!fileResult.getDeletedKeys().isEmpty()) {
-            DirectoryUtil.deleteFile(fileResult.getDeletedKeys(), DEFAULT_OUTPUT_PATH);
-        }
-
-        if (!fileResult.getUpdatedKeys().isEmpty()) {
-            DirectoryUtil.deleteFile(fileResult.getUpdatedKeys(), DEFAULT_OUTPUT_PATH);
+        // 删除目标文件
+        if (!fileResult.getDeletedKeys().isEmpty() || !fileResult.getUpdatedKeys().isEmpty()) {
+            final List<String> filesToRemove = fileResult.getDeletedKeys();
+            filesToRemove.addAll(fileResult.getUpdatedKeys());
+            DirectoryUtil.deleteFile(filesToRemove, DEFAULT_OUTPUT_PATH);
         }
 
         // 执行翻译逻辑
-        if (!fileResult.getAddedKeys().isEmpty() || !fileResult.getUpdatedKeys().isEmpty()) {
-            // 执行翻译逻辑
-            translateFiles(fileResult.getAddedKeys());
-            translateFiles(fileResult.getUpdatedKeys());
+        final List<String> addedOrUpdatedKeys = new ArrayList<>(fileResult.getAddedKeys());
+        addedOrUpdatedKeys.addAll(fileResult.getUpdatedKeys());
+        if (!addedOrUpdatedKeys.isEmpty()) {
+            translateFiles(addedOrUpdatedKeys);
         }
     }
 
