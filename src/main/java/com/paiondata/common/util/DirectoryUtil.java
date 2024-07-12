@@ -231,7 +231,7 @@ public class DirectoryUtil {
         final List<String> fileList = getCurrentFileList(directory);
         for (final String f : fileList) {
             final String[] split = f.split(File.separator);
-            String fileName = "docs" + File.separator + split[split.length - 1];
+            String fileName = "docs/docs" + File.separator + split[split.length - 1];
             if (!fileMap.containsKey(fileName)) {
                 log.warn(MessageConstant.REMOVE_FILE + directory + File.separator + split[split.length - 1]);
 
