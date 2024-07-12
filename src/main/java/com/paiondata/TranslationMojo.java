@@ -17,6 +17,7 @@ package com.paiondata;
 
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.paiondata.common.entity.AliyunInfo;
 import com.paiondata.common.entity.FileResult;
 import com.paiondata.common.entity.SparkInfo;
 import com.paiondata.common.util.DirectoryUtil;
@@ -113,29 +114,36 @@ public class TranslationMojo extends AbstractMojo {
      * @throws MojoExecutionException 如果缺少必要的API配置参数或翻译过程中发生异常。
      */
     private void translateFiles(final List<String> files) throws MojoExecutionException {
-        // 读取 api 参数
-        if (appid == null || appid.isEmpty()) {
-            throw new MojoExecutionException("appid 参数未设置");
-        }
-        if (apiSecret == null || apiSecret.isEmpty()) {
-            throw new MojoExecutionException("apiSecret 参数未设置");
-        }
-        if (apiKey == null || apiKey.isEmpty()) {
+
+        // 检查传入参数
+        if (apiKey != null && !apiKey.isEmpty()) {
+            if (appid.isEmpty() || apiSecret.isEmpty()) { // 如果appid或apiSecret没有设置
+                // 创建 AliyunInfo 对象
+                final AliyunInfo info = new AliyunInfo(apiKey);
+
+                try {
+                    // 调用 CreateClient.aliTranslate 方法进行翻译
+                    CreateClient.aliTranslate(info, files);
+                } catch (final NoApiKeyException | InputRequiredException e) {
+                    throw new MojoExecutionException("执行翻译时出现异常", e);
+                }
+            } else {
+                // 创建 SparkInfo 对象
+                final SparkInfo info = SparkInfo.builder()
+                        .appid(appid)
+                        .apiSecret(apiSecret)
+                        .apiKey(apiKey)
+                        .build();
+
+                try {
+                    // 调用 CreateClient.sparkTranslate 方法进行翻译
+                    CreateClient.sparkTranslate(info, files);
+                } catch (final NoApiKeyException | InputRequiredException e) {
+                    throw new MojoExecutionException("执行翻译时出现异常", e);
+                }
+            }
+        } else {
             throw new MojoExecutionException("apiKey 参数未设置");
-        }
-
-        // 创建 SparkInfo 对象
-        final SparkInfo info = SparkInfo.builder()
-                .appid(appid)
-                .apiSecret(apiSecret)
-                .apiKey(apiKey)
-                .build();
-
-        try {
-            // 调用 CreateClient.sparkTranslate 方法进行翻译
-            CreateClient.sparkTranslate(info, files);
-        } catch (final NoApiKeyException | InputRequiredException e) {
-            throw new MojoExecutionException("执行翻译时出现异常", e);
         }
     }
 }
