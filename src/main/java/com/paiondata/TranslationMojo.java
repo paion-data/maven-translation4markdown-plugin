@@ -90,8 +90,13 @@ public class TranslationMojo extends AbstractMojo {
         final FileResult fileResult = DirectoryUtil.syncFileWithMap(DEFAULT_OUTPUT_PATH, fileHash);
 
         // 删除输出目录
-        DirectoryUtil.deleteFile(fileResult.getDeletedKeys(), DEFAULT_OUTPUT_PATH);
-        DirectoryUtil.deleteFile(fileResult.getUpdatedKeys(), DEFAULT_OUTPUT_PATH);
+        if (!fileResult.getDeletedKeys().isEmpty()) {
+            DirectoryUtil.deleteFile(fileResult.getDeletedKeys(), DEFAULT_OUTPUT_PATH);
+        }
+
+        if (!fileResult.getUpdatedKeys().isEmpty()) {
+            DirectoryUtil.deleteFile(fileResult.getUpdatedKeys(), DEFAULT_OUTPUT_PATH);
+        }
 
         // 执行翻译逻辑
         if (!fileResult.getAddedKeys().isEmpty() || !fileResult.getUpdatedKeys().isEmpty()) {
