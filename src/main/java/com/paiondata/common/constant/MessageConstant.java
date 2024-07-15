@@ -55,4 +55,9 @@ public class MessageConstant {
      * 表示更新文件操作.
      */
     public static final String UPDATE_FILE = "更新文件: ";
+
+    /**
+     * 表示执行翻译时出现异常.
+     */
+    public static final String TRANSLATE_ERROR = "执行翻译时出现异常";
 }
