@@ -48,7 +48,7 @@ public class CreateClient {
             throw new TranslationException(MessageConstant.INPUT_ERROR);
         }
         MarkdownHandler.translate(AliyunInfo.SERVICE, inputPath, outputPath,
-                info.getApiKey(), info.getMode().toString());
+                info.getApiKey());
     }
 
     /**
