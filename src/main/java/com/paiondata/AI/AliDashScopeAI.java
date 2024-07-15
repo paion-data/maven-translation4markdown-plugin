@@ -26,7 +26,7 @@ import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 
 /**
- * AliDashScopeAI 类提供了生成特定消息回复的功能..
+ * AliDashScopeAI 类提供了生成特定消息回复的功能.
  */
 public class AliDashScopeAI {
 
