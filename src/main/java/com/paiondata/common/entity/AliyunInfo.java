@@ -22,18 +22,12 @@ import lombok.Builder;
  *
  * @field service 静态常量，表示服务提供商名称，默认为"Aliyun"。
  * @field apiKey  阿里云API密钥，用于认证和授权。
- * @field targetLanguage 目标语言代码，指定翻译或其他语言处理服务的目标语言。
- * @field mode  功能模式开关，布尔值，用于控制不同的服务模式或行为。
  *
  * @constructor AliyunInfo 默认构造函数。
  * @constructor AliyunInfo 初始化构造函数，接收apiKey、targetLanguage和mode作为参数。
  *
  * @method getApiKey 获取阿里云API密钥。
  * @method setApiKey 设置阿里云API密钥。
- * @method getTargetLanguage 获取目标语言代码。
- * @method setTargetLanguage 设置目标语言代码。
- * @method getMode 获取功能模式开关。
- * @method setMode 设置功能模式开关。
  */
 @Builder
 public class AliyunInfo extends BaseEntity {
@@ -45,10 +39,6 @@ public class AliyunInfo extends BaseEntity {
 
     private String apiKey;
 
-    private String targetLanguage;
-
-    private Boolean mode;
-
     /**
      * 无参构造函数.
      */
@@ -58,13 +48,9 @@ public class AliyunInfo extends BaseEntity {
     /**
      * 构造函数.
      * @param apiKey 阿里云API密钥
-     * @param targetLanguage 获取目标语言代码
-     * @param mode 功能模式开关
      */
-    public AliyunInfo(final String apiKey, final String targetLanguage, final Boolean mode) {
+    public AliyunInfo(final String apiKey) {
         this.apiKey = apiKey;
-        this.targetLanguage = targetLanguage;
-        this.mode = mode;
     }
 
     /**
@@ -81,37 +67,5 @@ public class AliyunInfo extends BaseEntity {
      */
     public void setApiKey(final String apiKey) {
         this.apiKey = apiKey;
-    }
-
-    /**
-     * 获取目标语言代码.
-     * @return 目标语言代码
-     */
-    public String getTargetLanguage() {
-        return targetLanguage;
-    }
-
-    /**
-     * 设置目标语言代码.
-     * @param targetLanguage 目标语言代码
-     */
-    public void setTargetLanguage(final String targetLanguage) {
-        this.targetLanguage = targetLanguage;
-    }
-
-    /**
-     * 获取功能模式开关.
-     * @return 功能模式开关
-     */
-    public Boolean getMode() {
-        return mode;
-    }
-
-    /**
-     * 设置功能模式开关.
-     * @param mode 功能模式开关
-     */
-    public void setMode(final Boolean mode) {
-        this.mode = mode;
     }
 }
