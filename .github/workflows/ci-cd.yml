@@ -29,7 +29,7 @@ jobs:
       - name: Release
         uses: paion-data/maven-central-release-action@master
         with:
-          user: Doom9527
+          user: redo
           email: 1633486422@qq.com
           gpg-keyname: ${{ secrets.GPG_KEYNAME }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
