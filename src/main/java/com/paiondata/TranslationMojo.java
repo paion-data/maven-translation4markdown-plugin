@@ -17,7 +17,6 @@ package com.paiondata;
 
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
-import com.paiondata.common.constant.MessageConstant;
 import com.paiondata.common.entity.AliyunInfo;
 import com.paiondata.common.entity.FileResult;
 import com.paiondata.common.entity.SparkInfo;
@@ -126,7 +125,7 @@ public class TranslationMojo extends AbstractMojo {
                     // 调用 CreateClient.aliTranslate 方法进行翻译
                     CreateClient.aliTranslate(info, files);
                 } catch (final NoApiKeyException | InputRequiredException e) {
-                    throw new MojoExecutionException(MessageConstant.TRANSLATE_ERROR, e);
+                    throw new MojoExecutionException("执行翻译时出现异常", e);
                 }
             } else {
                 // 创建 SparkInfo 对象
@@ -140,7 +139,7 @@ public class TranslationMojo extends AbstractMojo {
                     // 调用 CreateClient.sparkTranslate 方法进行翻译
                     CreateClient.sparkTranslate(info, files);
                 } catch (final NoApiKeyException | InputRequiredException e) {
-                    throw new MojoExecutionException(MessageConstant.TRANSLATE_ERROR, e);
+                    throw new MojoExecutionException("执行翻译时出现异常", e);
                 }
             }
         } else {
