@@ -37,7 +37,15 @@ public class AliyunInfo extends BaseEntity {
      */
     public static final String SERVICE = "Aliyun";
 
+    /**
+     * api密钥.
+     */
     private String apiKey;
+
+    /**
+     * 内核类型.
+     */
+    private String engine;
 
     /**
      * 无参构造函数.
@@ -59,6 +67,14 @@ public class AliyunInfo extends BaseEntity {
      */
     public String getApiKey() {
         return apiKey;
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
     }
 
     /**
