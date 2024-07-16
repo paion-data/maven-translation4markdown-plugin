@@ -10,32 +10,34 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Support for multiple AI models',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+          The plugin supports multiple AI models, including Xunfei Spark, Aliyun Qwen, to
+          understand and generate high-quality multilingual text
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Integration with Docusaurus',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+          The plugin is designed to work seamlessly with Docusaurus, a popular open-source
+          static site generator for documentation websites. Ensure that the translated document is compiled and presented
+          correctly.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Open Source',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+          maven-translate4markdown-plugin is 100% open source and available on <a href="https://github.com/paion-data/maven-translation4markdown-plugin">Github</a>. Released
+          under the commercial-friendly
+          <a href="http://www.apache.org/licenses/LICENSE-2.0.html"> Apache License, Version 2.0.</a>
       </>
     ),
   },
