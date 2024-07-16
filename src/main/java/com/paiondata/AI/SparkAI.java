@@ -57,7 +57,7 @@ public class SparkAI extends WebSocketListener {
 
     public static String totalAnswer=""; // 大模型的答案汇总
 
-    // 环境治理的重要性  环保  人口老龄化  我爱我的祖国
+    // 环境治理的重要性  环保  人口老龄化 我爱我的祖国
     public static  String NewQuestion = "";
 
     public static final Gson gson = new Gson();
