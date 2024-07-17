@@ -36,7 +36,7 @@ correctly.
 - **Multilingual document support**: For projects that want to quickly scale to the global market, this plugin can 
 accelerate the production of multilingual versions of documents.
 - **Continuous integration/Continuous Deployment (CI/CD)**: Integration in GitHub Actions or other CI/CD platforms for
-- automatic translation and documentation updates after every code commit.
+automatic translation and documentation updates after every code commit.
 ## Getting AI models
 
 ### You need to prepare the AI model in advance.
