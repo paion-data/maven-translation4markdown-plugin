@@ -50,6 +50,12 @@ public class SparkInfo extends BaseEntity {
     private String apiKey;
 
     /**
+     * 内核类型.
+     */
+    private String engine;
+
+
+    /**
      * 默认构造函数.
      */
     public SparkInfo() {
@@ -113,5 +119,13 @@ public class SparkInfo extends BaseEntity {
      */
     public void setApiKey(final String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
     }
 }

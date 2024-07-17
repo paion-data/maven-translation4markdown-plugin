@@ -72,6 +72,8 @@ public class TranslationMojo extends AbstractMojo {
     private String apiSecret;
     @Parameter(property = "apiKey")
     private String apiKey;
+    @Parameter(property = "engine")
+    private String engine;
 
     /**
      * 执行Mojo的主要入口方法.
@@ -134,6 +136,7 @@ public class TranslationMojo extends AbstractMojo {
                         .appid(appid)
                         .apiSecret(apiSecret)
                         .apiKey(apiKey)
+                        .engine(engine)
                         .build();
 
                 try {

@@ -90,7 +90,7 @@ public class SparkAI extends WebSocketListener {
      *
      * @throws Exception 包含可能抛出的各种异常，如网络问题、解析异常等。
      */
-    public static String getAnswer(String appid, String apiKey, String apiSecret, String content) {
+    public static String getAnswer(String appid, String apiKey, String apiSecret, String engine, String content) {
         try {
             totalAnswer = "";
             // 构建鉴权url

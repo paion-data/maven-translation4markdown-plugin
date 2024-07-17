@@ -61,7 +61,7 @@ public class MarkdownHandler {
             case AliyunInfo.SERVICE -> trans =
                     AliDashScopeAI.callWithMessage(params[2], Boolean.parseBoolean(params[3]), inputContent);
             case SparkInfo.SERVICE -> trans =
-                    SparkAI.getAnswer(params[2], params[3], params[4], inputContent);
+                    SparkAI.getAnswer(params[2], params[3], params[4], params[5], inputContent);
             default -> throw new TranslationException("不支持的翻译服务：" + service);
         }
 

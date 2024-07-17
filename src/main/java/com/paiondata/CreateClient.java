@@ -81,11 +81,12 @@ public class CreateClient {
      */
     private static void sparkTranslateSingle(final SparkInfo info, final String outputPath, final String inputPath)
             throws NoApiKeyException, InputRequiredException {
-        if (info == null || info.getAppid() == null || info.getApiKey() == null || info.getApiSecret() == null) {
+        if (info == null || info.getAppid() == null || info.getApiKey() == null || info.getApiSecret() == null
+                || info.getEngine() == null) {
             throw new TranslationException(MessageConstant.INPUT_ERROR);
         }
         MarkdownHandler.translate(SparkInfo.SERVICE, inputPath, outputPath,
-                info.getAppid(), info.getApiKey(), info.getApiSecret());
+                info.getAppid(), info.getApiKey(), info.getApiSecret(), info.getEngine());
     }
 
     /**
